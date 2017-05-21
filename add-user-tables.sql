@@ -16,10 +16,10 @@ USE `restful_api_demo` ;
 CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_tokens` (
   `user_info_id` int(70) NOT NULL AUTO_INCREMENT,
   `user_id_fk` int(70) NOT NULL,
-  `user_token` varchar(600) DEFAULT NULL,
+  `token` varchar(600) DEFAULT NULL,
   PRIMARY KEY (`user_info_id`),
   UNIQUE KEY `user_id_fk_UNIQUE` (`user_id_fk`),
-  CONSTRAINT `user_info_foreign_key` FOREIGN KEY (`user_id_fk`) REFERENCES `users` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `user_info_foreign_key` FOREIGN KEY (`user_id_fk`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -27,12 +27,12 @@ CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_tokens` (
 # ------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`users` (
-  `user_id` int(70) NOT NULL AUTO_INCREMENT,
-  `user_email` varchar(45) NOT NULL,
-  `user_password` varchar(45) DEFAULT NULL,
-  `user_join_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `user_email_UNIQUE` (`user_email`)
+  `id` int(70) NOT NULL AUTO_INCREMENT,
+  `email` varchar(45) NOT NULL DEFAULT '',
+  `password` varchar(45) DEFAULT NULL,
+  `join_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
