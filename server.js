@@ -6,8 +6,8 @@ var db = require('./app/db');
 var rfs = require('rotating-file-stream'), accessLogger = require('morgan'), winston = require('winston');
 
 passport.use(new Strategy(
-  function(token, cb) {
-    db.users.findByToken(token, function(err, user) {
+  (token, cb) => {
+    db.users.findByToken(token, (err, user) => {
       if (err) { return cb(err); }
       if (!user) { return cb(null, false); }
       return cb(null, user);
@@ -63,13 +63,13 @@ var errorLogger = new winston.Logger({
 });
 module.exports = errorLogger;
 module.exports.stream = {
-    write: function(message, encoding){
+    write: (message, encoding) => {
         errorLogger.info(message);
     }
 };
 app.errorLogger = errorLogger;
 
-REST.prototype.connectMysql = function() {
+REST.prototype.connectMysql = () => {
     var self = this;
     var pool = mysql.createPool(require('./app/config/database.json'));
     pool.getConnection(function(err,connection){
@@ -81,7 +81,7 @@ REST.prototype.connectMysql = function() {
     });
 }
 
-REST.prototype.configureExpress = function(connection) {
+REST.prototype.configureExpress = (connection) => {
     var self = this;
     Auth = passport.authenticate('bearer', { session: false });
     app.baseUrl = 'https://localhost:3443';
@@ -91,14 +91,14 @@ REST.prototype.configureExpress = function(connection) {
     self.startServer();
 }
 
-REST.prototype.startServer = function() {
+REST.prototype.startServer = () => {
     https.createServer({ key: fs.readFileSync('./https/key.pem'), cert: fs.readFileSync('./https/cert.pem') }, app)
     .listen(3443, function () {
         app.errorLogger.info('Secure Server listening on port 3443');
     });
 }
 
-REST.prototype.stop = function(err) {
+REST.prototype.stop = (err) => {
     app.errorLogger.error("ISSUE WITH MYSQL n" + err);
     process.exit(1);
 }

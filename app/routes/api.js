@@ -19,10 +19,10 @@ function passwordReset(req, res, next, connection, md5, app) {
         }
     });
 }
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
+REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     // api routes
     router.route('/')
-        .get(function(req, res) {
+        .get((req, res) => {
             var msg = {
                 description: 'This is a list of available endpoints and documentation.',
                 endpoints:  {
@@ -50,7 +50,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             res.json({ Error: false, Message: msg });
     });
     router.route('/users')
-        .get(function(req, res, next) { // Index
+        .get((req, res, next) => { // Index
             var query = "SELECT * FROM ??";
             var table = ["users"];
             query = mysql.format(query,table);
@@ -66,7 +66,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                 }
             });
         })
-        .post(function(req, res, next) { // Create
+        .post((req, res, next) => { // Create
             var query = "INSERT INTO ??(??,??) VALUES (?,?)";
             var table = ["users","user_email","user_password",req.body.email,md5(req.body.password)];
             query = mysql.format(query,table);
@@ -82,9 +82,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                 }
             });
     	})
-		.put((req, res, next)=>{ passwordReset(req,res,next,connection,md5,app) }); // Update
+		.put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
     router.route('/user/:id')
-        .get(function(req, res, next) { // Read
+        .get((req, res, next) => { // Read
             var query = "SELECT * FROM ?? WHERE ??=?";
             var table = ["users","user_id",req.params.id];
             query = mysql.format(query,table);
@@ -100,7 +100,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                 }
             });
         })
-        .delete(function(req, res, next) { // Delete
+        .delete((req, res, next) => { // Delete
             var query = "DELETE from ?? WHERE ??=?";
             var table = ["users","user_id",req.params.id];
             query = mysql.format(query,table);
@@ -117,7 +117,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             });
     	});
     router.route('/password-reset')
-    	.put((req, res, next)=>{ passwordReset(req,res,next,connection,md5,app) }); // Update
+    	.put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
 }
 
 module.exports = REST_ROUTER;
