@@ -20,7 +20,7 @@ function passwordReset(req, res, next, connection, md5, app) {
     });
 }
 // TODO: update and route documentation endponints
-// TODO: token generatoion endpoint using username/password
+// TODO: token generatoion endpoint using POST email/password
 
 REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     // api routes
@@ -35,18 +35,6 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
                         update: { PUT:    app.baseUrl + '/api/user/:id' },
                         delete: { DELETE: app.baseUrl + '/api/user/:id' },
                         index:  { GET:    app.baseUrl + '/api/users/' }
-                    }
-                },
-                documentation:  {
-                    User: {
-                        create: { POST:   app.baseUrl + '/docs/users/' },
-                        read:   { GET:    app.baseUrl + '/docs/user/:id' },
-                        update: { PUT:    app.baseUrl + '/docs/user/:id' },
-                        delete: { DELETE: app.baseUrl + '/docs/user/:id' },
-                        index:  { GET:    app.baseUrl + '/docs/users/' }
-                    },
-                    CurrentUser: {
-                        read:    { GET:   app.baseUrl + '/docs/user/' }
                     }
                 }
             };
