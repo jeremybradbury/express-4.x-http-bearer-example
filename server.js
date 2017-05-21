@@ -92,7 +92,7 @@ REST.prototype.configureExpress = function(connection) {
     app.baseUrl = 'https://localhost:3443';
     var router = express.Router();
     app.use('/api', app.Auth, router);
-    var rest_router = new rest(router,connection,md5);
+    var rest_router = new rest(router,connection,md5,app);
     self.startServer();
 }
 

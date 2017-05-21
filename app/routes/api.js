@@ -1,10 +1,10 @@
 var mysql = require("mysql");
-function REST_ROUTER(router,connection,md5) {
+function REST_ROUTER(router,connection,md5,app) {
     var self = this;
-    self.handleRoutes(router,connection,md5);
+    self.handleRoutes(router,connection,md5,app);
 }
 
-REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
+REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
     // api routes
     router.route('/')
         .get(function(req, res) {
@@ -50,7 +50,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 } else {
                     meJSON = {"Error" : false, "Message" : "Success", "Users" : rows};
                     res.json(meJSON);
-                    app.errorLogger.info(meJSON.Message);
+                    app.errorLogger.info(meJSON.Message,rows);
                 }
             });
         })
