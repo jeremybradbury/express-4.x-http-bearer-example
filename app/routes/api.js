@@ -44,9 +44,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
-                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query"};
+                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
                     res.json(meJSON);
-                    app.errorLogger.error(meJSON.Message);
+                    app.errorLogger.error(meJSON.Message+err);
                 } else {
                     meJSON = {"Error" : false, "Message" : "Success", "Users" : rows};
                     res.json(meJSON);
@@ -60,9 +60,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
-                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query"};
+                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
                     res.json(meJSON);
-                    app.errorLogger.error(meJSON.Message);
+                    app.errorLogger.error(meJSON.Message+err);
                 } else {
                     meJSON = {"Error" : false, "Message" : "User Added !"};
                     res.json(meJSON);
@@ -77,8 +77,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
-                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query"};
-                    app.errorLogger.err(meJSON.Message);
+                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+                    app.errorLogger.err(meJSON.Message+err);
                     res.json(meJSON);
                 } else {
                     meJSON = {"Error" : false, "Message" : "Success", "Users" : rows};
@@ -109,9 +109,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
-                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query"};
+                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
                     res.json(meJSON);
-                    app.errorLogger.error(meJSON.Message);
+                    app.errorLogger.error(meJSON.Message+err);
                 } else {
                     meJSON = {"Error" : false, "Message" : "Deleted the user "+req.params.id};
                     res.json(meJSON);
