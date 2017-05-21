@@ -69,7 +69,7 @@ module.exports.stream = {
 };
 app.errorLogger = errorLogger;
 
-REST.prototype.connectMysql = () => {
+REST.prototype.connectMysql = function() {
     var self = this;
     var pool = mysql.createPool(require('./app/config/database.json'));
     pool.getConnection(function(err,connection){
@@ -81,7 +81,7 @@ REST.prototype.connectMysql = () => {
     });
 }
 
-REST.prototype.configureExpress = (connection) => {
+REST.prototype.configureExpress = function(connection) {
     var self = this;
     Auth = passport.authenticate('bearer', { session: false });
     app.baseUrl = 'https://localhost:3443';
@@ -91,14 +91,14 @@ REST.prototype.configureExpress = (connection) => {
     self.startServer();
 }
 
-REST.prototype.startServer = () => {
+REST.prototype.startServer = function() {
     https.createServer({ key: fs.readFileSync('./https/key.pem'), cert: fs.readFileSync('./https/cert.pem') }, app)
     .listen(3443, function () {
         app.errorLogger.info('Secure Server listening on port 3443');
     });
 }
 
-REST.prototype.stop = (err) => {
+REST.prototype.stop = function(err) {
     app.errorLogger.error("ISSUE WITH MYSQL n" + err);
     process.exit(1);
 }
