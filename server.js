@@ -2,7 +2,6 @@ var express = require('express');
 var mysql = require("mysql"), md5 = require('MD5'), rest = require("./app/routes.js");
 var fs = require('fs'), path = require('path'), bodyParser = require('body-parser');
 var passport = require('passport'), Strategy = require('passport-http-bearer').Strategy, https = require('https');
-//var db = require('./app/db');
 var rfs = require('rotating-file-stream'), accessLogger = require('morgan'), winston = require('winston');
 
 var app = express();
