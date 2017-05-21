@@ -19,6 +19,9 @@ function passwordReset(req, res, next, connection, md5, app) {
         }
     });
 }
+// TODO: update and route documentation endponints
+// TODO: token generatoion endpoint using username/password
+
 REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     // api routes
     router.route('/')
