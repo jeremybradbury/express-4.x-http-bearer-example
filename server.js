@@ -81,10 +81,10 @@ REST.prototype.connectMysql = function() {
 
 REST.prototype.configureExpress = function(connection) {
     var self = this;
-    app.Auth = passport.authenticate('bearer', { session: false });
+    Auth = passport.authenticate('bearer', { session: false });
     app.baseUrl = 'https://localhost:3443';
     var router = express.Router();
-    app.use('/api', app.Auth, router);
+    app.use('/api', Auth, router);
     var rest_router = new rest(router,connection,md5,app);
     self.startServer();
 }
