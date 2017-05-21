@@ -1,7 +1,8 @@
 var express = require('express');
+var mysql = require("mysql"), md5 = require('MD5'), rest = require("./app/routes/api.js");
 var fs = require('fs'), path = require('path'), bodyParser = require('body-parser');
 var passport = require('passport'), Strategy = require('passport-http-bearer').Strategy, https = require('https');
-var db = require('./db');
+var db = require('./app/db');
 var rfs = require('rotating-file-stream'), accessLogger = require('morgan'), winston = require('winston');
 
 passport.use(new Strategy(
@@ -15,10 +16,12 @@ passport.use(new Strategy(
 
 var app = express();
 
-// ## configure
-app.Auth = passport.authenticate('bearer', { session: false });
-app.baseUrl = 'https://localhost:3443';
- // log access
+function REST(){
+    var self = this;
+    self.connectMysql();
+};
+
+// log access
 var logDirectory = path.join(__dirname, 'log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory); // ensure log directory exists
 var accessLogStream = rfs('access.log', { // create a rotating write stream
@@ -64,17 +67,45 @@ module.exports.stream = {
 };
 app.errorLogger = errorLogger;
 
-// route
-require('./routes')(app,express);
+REST.prototype.connectMysql = function() {
+    var self = this;
+    var pool      =    mysql.createPool({
+        connectionLimit : 100,
+        host     : 'localhost',
+        user     : 'root',
+        password : '',
+        database : 'restful_api_demo',
+        debug    :  false
+    });
+    pool.getConnection(function(err,connection){
+        if(err) {
+          self.stop(err);
+        } else {
+          self.configureExpress(connection);
+        }
+    });
+}
 
-// ## routes
-app.get('/user', app.Auth,
-  function(req, res) {
-    res.json({ username: req.user.username, email: req.user.emails[0].value });
-});
+REST.prototype.configureExpress = function(connection) {
+    var self = this;
+    app.Auth = passport.authenticate('bearer', { session: false });
+    app.baseUrl = 'https://localhost:3443';
+    var router = express.Router();
+    app.use('/api', app.Auth, router);
+    var rest_router = new rest(router,connection,md5);
+    self.startServer();
+}
 
-// ## listen 
-https.createServer({ key: fs.readFileSync('./https/key.pem'), cert: fs.readFileSync('./https/cert.pem') }, app)
+REST.prototype.startServer = function() {
+    https.createServer({ key: fs.readFileSync('./https/key.pem'), cert: fs.readFileSync('./https/cert.pem') }, app)
     .listen(3443, function () {
-        errorLogger.info('Secure Server listening on port 3443');
-});
+        app.errorLogger.info('Secure Server listening on port 3443');
+    });
+}
+
+REST.prototype.stop = function(err) {
+    app.errorLogger.error("ISSUE WITH MYSQL n" + err);
+    process.exit(1);
+}
+
+new REST();
