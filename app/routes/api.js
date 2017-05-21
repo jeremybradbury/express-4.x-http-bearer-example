@@ -32,9 +32,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                         update: { PUT:    app.baseUrl + '/api/user/:id' },
                         delete: { DELETE: app.baseUrl + '/api/user/:id' },
                         index:  { GET:    app.baseUrl + '/api/users/' }
-                    },
-                    CurrentUser: {
-                        read:    { GET:   app.baseUrl + '/api/user/' }
                     }
                 },
                 documentation:  {
