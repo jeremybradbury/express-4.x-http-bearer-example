@@ -27,7 +27,11 @@ var accessLogStream = rfs('access.log', { // create a rotating write stream
   path: logDirectory
 });
 accessLogger.token('remote-user', (req) => {
-  return req.user.username; // ignore basic HTTP auth user replace with token owner
+    if(req.user){
+        return req.user.username; // ignore basic HTTP auth user replace with token owner 
+    } else {
+        return "aNonUser"; // anonymous login no auth endpoints (like docs)
+    }
 });
 app.accessLogger = accessLogger;
 app.use(accessLogger('combined', {stream: accessLogStream})); // morgan likes to log to a file
