@@ -34,11 +34,11 @@ accessLogger.token('remote-user', (req) => {
     }
 });
 app.accessLogger = accessLogger;
-app.use(accessLogger('combined', {stream: accessLogStream})); // morgan likes to log to a file
+app.use(accessLogger('combined', {stream: accessLogStream})); // morgan likes to log to a rotating file
  // log errors
 var errorLogger = new winston.Logger({
     transports: [
-        new winston.transports.File({
+        new winston.transports.File({ // winston likes to log to a rotating file too
             level: 'info', //  error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
             filename: './log/error.log',
             handleExceptions: true,
@@ -47,7 +47,7 @@ var errorLogger = new winston.Logger({
             zippedArchive: true,
             colorize: false
         }),
-        new winston.transports.Console({
+        new winston.transports.Console({ // winston also likes to log to stdout
             level: 'info', //  error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
             handleExceptions: true,
             json: false,
