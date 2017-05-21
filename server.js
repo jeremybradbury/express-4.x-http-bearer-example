@@ -15,6 +15,8 @@ passport.use(new Strategy(
 }));
 
 var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // bodyParser() will let us get the data from a POST
 
 function REST(){
     var self = this;
