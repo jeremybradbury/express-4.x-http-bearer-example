@@ -69,14 +69,7 @@ app.errorLogger = errorLogger;
 
 REST.prototype.connectMysql = function() {
     var self = this;
-    var pool      =    mysql.createPool({
-        connectionLimit : 100,
-        host     : 'localhost',
-        user     : 'root',
-        password : '',
-        database : 'restful_api_demo',
-        debug    :  false
-    });
+    var pool = mysql.createPool(require('./app/config/database.json'));
     pool.getConnection(function(err,connection){
         if(err) {
           self.stop(err);

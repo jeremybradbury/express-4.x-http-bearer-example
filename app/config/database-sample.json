@@ -1,0 +1,8 @@
+{ // add your connection details, rename to database.json (in .gitingnore) AND make sure to remove this comment!!
+"connectionLimit":100,
+"host":"localhost",
+"user": "root",
+"password": "", 
+"database": "restful_api_demo", 
+"debug": false
+}
