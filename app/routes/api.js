@@ -3,7 +3,22 @@ function REST_ROUTER(router,connection,md5,app) {
     var self = this;
     self.handleRoutes(router,connection,md5,app);
 }
-
+function passwordReset(req, res, next, connection, md5, app) {
+    var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+    var table = ["user_login","user_password",md5(req.body.password),"user_email",req.body.email];
+    query = mysql.format(query,table);
+    connection.query(query,function(err,rows){
+        if(err) {
+            meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+            res.json(meJSON);
+            app.errorLogger.error(meJSON.Message+err);
+        } else {
+            meJSON = {"Error" : false, "Message" : "Updated the password for email "+req.body.email};
+            res.json(meJSON);
+            app.errorLogger.info(meJSON.Message);
+        }
+    });
+}
 REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
     // api routes
     router.route('/')
@@ -69,7 +84,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                     app.errorLogger.info(meJSON.Message);
                 }
             });
-    });
+    	})
+		.put((req, res, next)=>{ passwordReset(req,res,next,connection,md5,app) }); // Update
     router.route('/user/:id')
         .get(function(req, res, next) { // Read
             var query = "SELECT * FROM ?? WHERE ??=?";
@@ -87,25 +103,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                 }
             });
         })
-        .put(function(req, res, next) { // Update
-            var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-            var table = ["user_login","user_password",md5(req.body.password),"user_email",req.body.email];
-            query = mysql.format(query,table);
-            connection.query(query,function(err,rows){
-                if(err) {
-                    meJSON = {"Error" : true, "Message" : "Error executing MySQL query"};
-                    res.json(meJSON);
-                    app.errorLogger.error(meJSON.Message);
-                } else {
-                    meJSON = {"Error" : false, "Message" : "Updated the password for email "+req.body.email};
-                    res.json(meJSON);
-                    app.errorLogger.info(meJSON.Message);
-                }
-            });
-        })
         .delete(function(req, res, next) { // Delete
             var query = "DELETE from ?? WHERE ??=?";
-            var table = ["user_login","id",req.params.id];
+            var table = ["user_login","user_id",req.params.id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -118,7 +118,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
                     app.errorLogger.info(meJSON.Message);
                 }
             });
-    });
+    	});
+    router.route('/password-reset')
+    	.put((req, res, next)=>{ passwordReset(req,res,next,connection,md5,app) }); // Update
 }
 
 module.exports = REST_ROUTER;
