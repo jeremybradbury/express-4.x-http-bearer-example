@@ -84,8 +84,8 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
                     app.errorLogger.info(meJSON.Message);
                 }
             });
-    	})
-		.put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
+        })
+        .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
     router.route('/user/:id')
         .get((req, res, next) => { // Read
             var query = "SELECT * FROM ?? WHERE ??=?";
@@ -118,9 +118,9 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
                     app.errorLogger.info(meJSON.Message);
                 }
             });
-    	});
+        });
     router.route('/password-reset')
-    	.put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
+        .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
 }
 
 module.exports = REST_ROUTER;
