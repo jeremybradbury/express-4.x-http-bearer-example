@@ -2,17 +2,8 @@ var express = require('express');
 var mysql = require("mysql"), md5 = require('MD5'), rest = require("./app/routes/api.js");
 var fs = require('fs'), path = require('path'), bodyParser = require('body-parser');
 var passport = require('passport'), Strategy = require('passport-http-bearer').Strategy, https = require('https');
-var db = require('./app/db');
+//var db = require('./app/db');
 var rfs = require('rotating-file-stream'), accessLogger = require('morgan'), winston = require('winston');
-
-passport.use(new Strategy(
-  (token, cb) => {
-    db.users.findByToken(token, (err, user) => {
-      if (err) { return cb(err); }
-      if (!user) { return cb(null, false); }
-      return cb(null, user);
-    });
-}));
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -68,6 +59,24 @@ module.exports.stream = {
     }
 };
 app.errorLogger = errorLogger;
+function findByToken(connection, md5, app, token, cb) {
+    var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
+    var table = ["token","email","id","user_tokens","users","user_id_fk","token",token];
+    query = mysql.format(query,table);
+    connection.query(query,function(err,rows){
+        if(rows) {
+	        process.nextTick(function() {
+			    for (var i = 0, len = rows.length; i < len; i++) {
+			      var row = rows[i];
+			      if (row.token === token) {
+			        return cb(null, row);
+			      }
+			    }
+			    return cb(null, null);
+			});
+        }
+    });
+}
 
 REST.prototype.connectMysql = function() {
     var self = this;
@@ -88,6 +97,14 @@ REST.prototype.configureExpress = function(connection) {
     var router = express.Router();
     app.use('/api', Auth, router);
     var rest_router = new rest(router,connection,md5,app);
+	passport.use(new Strategy(
+	  (token, cb) => {
+	    findByToken(connection, md5, app, token, (err, user) => {
+	      if (err) { return cb(err); }
+	      if (!user) { return cb(null, false); }
+	      return cb(null, user);
+	    });
+	}));
     self.startServer();
 }
 
