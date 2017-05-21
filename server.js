@@ -14,7 +14,7 @@ function REST(){
 };
 
 // log access
-var logDirectory = path.join(__dirname, 'log');
+var logDirectory = path.join(__dirname, 'app/log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory); // ensure log directory exists
 var accessLogStream = rfs('access.log', { // create a rotating write stream
   size:		'10M', // rotate every 10 MB written
@@ -35,7 +35,7 @@ var errorLogger = new winston.Logger({
 	transports: [
 		new winston.transports.File({ // winston likes to log to a rotating file too
 			level: 'info', //  error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5 }
-			filename: './log/error.log',
+			filename: './app/log/error.log',
 			handleExceptions: true,
 			json: false,
 			maxsize: 10485760, //10MB
@@ -108,7 +108,7 @@ REST.prototype.configureExpress = function(connection) {
 }
 
 REST.prototype.startServer = function() {
-	https.createServer({ key: fs.readFileSync('./https/key.pem'), cert: fs.readFileSync('./https/cert.pem') }, app)
+	https.createServer({ key: fs.readFileSync('./app/https/key.pem'), cert: fs.readFileSync('./app/https/cert.pem') }, app)
 	.listen(3443, function () {
 		app.errorLogger.info('Secure Server listening on port 3443');
 	});

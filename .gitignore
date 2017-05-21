@@ -6,5 +6,5 @@ node_modules/
 npm-debug.log
 
 # App
-log/
+app/log/
 app/config/database.json
