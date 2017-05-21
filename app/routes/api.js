@@ -5,7 +5,7 @@ function REST_ROUTER(router,connection,md5,app) {
 }
 function passwordReset(req, res, next, connection, md5, app) {
     var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-    var table = ["users","user_password",md5(req.body.password),"user_email",req.body.email];
+    var table = ["users","password",md5(req.body.password),"email",req.body.email];
     query = mysql.format(query,table);
     connection.query(query,function(err,rows){
         if(err) {
@@ -54,8 +54,8 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     });
     router.route('/users')
         .get((req, res, next) => { // Index
-            var query = "SELECT * FROM ??";
-            var table = ["users"];
+            var query = "SELECT ??, ?? FROM ??";
+            var table = ["id","email","users"];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -71,7 +71,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
         })
         .post((req, res, next) => { // Create
             var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-            var table = ["users","user_email","user_password",req.body.email,md5(req.body.password)];
+            var table = ["users","email","password",req.body.email,md5(req.body.password)];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
