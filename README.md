@@ -8,7 +8,7 @@ To install this example on your computer, clone the repository and install
 dependencies.
 
 ```bash
-$ git clone git@github.com:passport/express-4.x-http-bearer-example.git
+$ git clone git@github.com:jeremybradbury/express-4.x-http-bearer-example.git
 $ cd express-4.x-http-bearer-example
 $ npm install
 ```
@@ -22,5 +22,5 @@ $ node server.js
 Use `curl` to send an authenticated request.
 
 ```bash
-$ curl -v -H "Authorization: Bearer 123456789" http://127.0.0.1:3000/
+$ curl -v -H "Authorization: Bearer 123456789" https://127.0.0.1:3443/
 ```
