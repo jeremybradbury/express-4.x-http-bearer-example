@@ -23,7 +23,7 @@ var accessLogStream = rfs('access.log', { // create a rotating write stream
 });
 accessLogger.token('remote-user', (req) => {
 	if(req.user){
-		return req.user.username; // ignore basic HTTP auth user replace with token owner 
+		return req.user.email; // ignore basic HTTP auth user replace with token owner 
 	} else {
 		return "aNonUser"; // anonymous login no auth endpoints (like docs)
 	}
