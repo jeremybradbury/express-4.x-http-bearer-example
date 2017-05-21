@@ -116,7 +116,7 @@ REST.prototype.startServer = function() {
 }
 
 REST.prototype.stop = function(err) {
-	app.errorLogger.error("ISSUE WITH MYSQL n" + err);
+	app.errorLogger.error("ISSUE WITH MYSQL \n" + err);
 	process.exit(1);
 }
 
