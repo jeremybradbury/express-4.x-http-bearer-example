@@ -10,6 +10,7 @@
     "auth",
     "mysql"
   ],
+  "scripts": { "start" : "node app.js" },
   "author": "Jeremy Bradbury",
   "license": "Unlicense",
   "homepage": "https://github.com/jeremybradbury/express-4.x-http-bearer-example",
