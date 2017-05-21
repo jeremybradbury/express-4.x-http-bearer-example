@@ -5,7 +5,7 @@ function REST_ROUTER(router,connection,md5,app) {
 }
 function passwordReset(req, res, next, connection, md5, app) {
     var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-    var table = ["user_login","user_password",md5(req.body.password),"user_email",req.body.email];
+    var table = ["users","user_password",md5(req.body.password),"user_email",req.body.email];
     query = mysql.format(query,table);
     connection.query(query,function(err,rows){
         if(err) {
@@ -52,7 +52,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
     router.route('/users')
         .get(function(req, res, next) { // Index
             var query = "SELECT * FROM ??";
-            var table = ["user_login"];
+            var table = ["users"];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -68,7 +68,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
         })
         .post(function(req, res, next) { // Create
             var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-            var table = ["user_login","user_email","user_password",req.body.email,md5(req.body.password)];
+            var table = ["users","user_email","user_password",req.body.email,md5(req.body.password)];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -86,7 +86,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
     router.route('/user/:id')
         .get(function(req, res, next) { // Read
             var query = "SELECT * FROM ?? WHERE ??=?";
-            var table = ["user_login","user_id",req.params.id];
+            var table = ["users","user_id",req.params.id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
@@ -102,7 +102,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5,app) {
         })
         .delete(function(req, res, next) { // Delete
             var query = "DELETE from ?? WHERE ??=?";
-            var table = ["user_login","user_id",req.params.id];
+            var table = ["users","user_id",req.params.id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
                 if(err) {
