@@ -1,24 +1,30 @@
 {
-  "name": "express-4.x-http-bearer-example",
-  "version": "0.0.0",
-  "description": "Express 4.x app using Passport for authentication via HTTP Bearer scheme.",
+  "name": "express-4.x-https-bearer-token-mysql-api",
+  "version": "0.0.1",
+  "description": "Express 4.x HTTPS API app using Passport for authentication via Bearer scheme with a MariaDB/MySQL backend.",
   "keywords": [
     "example",
     "express",
-    "passport"
+    "passport",
+    "https",
+    "auth",
+    "mysql"
   ],
-  "author": "Jared Hanson",
+  "scripts": { "start" : "node app.js" },
+  "author": "Jeremy Bradbury",
   "license": "Unlicense",
-  "homepage": "https://github.com/passport/express-4.x-http-bearer-example",
+  "homepage": "https://github.com/jeremybradbury/express-4.x-http-bearer-example",
   "repository": {
     "type": "git",
-    "url": "git://github.com/passport/express-4.x-http-bearer-example.git"
+    "url": "git://github.com/jeremybradbury/express-4.x-http-bearer-example.git"
   },
   "bugs": {
-    "url": "https://github.com/passport/express-4.x-http-bearer-example/issues"
+    "url": "https://github.com/jeremybradbury/express-4.x-http-bearer-example/issues"
   },
   "dependencies": {
-    "body-parser": "^1.17.2",
+    "mysql": "^2.5.5",
+    "body-parser": "^1.17.0",
+    "md5": "^2.0.0",
     "express": "^4.13.3",
     "morgan": "^1.6.1",
     "passport": "^0.2.2",
