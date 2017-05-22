@@ -4,7 +4,7 @@ scheme. This app extends the original demo implementing HTTPS (cuz who wants to 
 
 That said there is an unmanaged (by NPM) dependency of the actual MariaDB/MySQL database server. You will need it to import the users table the demo user/token data.
 
-For https without MySQL (still using a flat user/token file from the demo) see [tag v0.1](tag/v0.1).
+For https without MySQL (still using a flat user/token file from the demo) see [tag v0.1](/jeremybradbury/express4-https-bearer-token-mysql-api//tree/v0.1).
 
 ## Instructions
 
