@@ -14,10 +14,10 @@ USE `restful_api_demo` ;
 # ------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_tokens` (
-  `user_info_id` int(70) NOT NULL AUTO_INCREMENT,
+  `token_id` int(70) NOT NULL AUTO_INCREMENT,
   `user_id_fk` int(70) NOT NULL,
   `token` varchar(600) DEFAULT NULL,
-  PRIMARY KEY (`user_info_id`),
+  PRIMARY KEY (`token_id`),
   UNIQUE KEY `user_id_fk_UNIQUE` (`user_id_fk`),
   CONSTRAINT `user_info_foreign_key` FOREIGN KEY (`user_id_fk`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_tokens` (
 LOCK TABLES `user_tokens` WRITE;
 /*!40000 ALTER TABLE `user_tokens` DISABLE KEYS */;
 
-INSERT INTO `user_tokens` (`user_info_id`, `user_id_fk`, `token`)
+INSERT INTO `user_tokens` (`token_id`, `user_id_fk`, `token`)
 VALUES (1,1,'123456789');
 
 /*!40000 ALTER TABLE `user_tokens` ENABLE KEYS */;
