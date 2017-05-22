@@ -1,7 +1,7 @@
 {
-  "name": "express-4.x-https-bearer-token-mysql-api",
+  "name": "express4-https-bearer-token-mysql-api",
   "version": "0.0.1",
-  "description": "Express 4.x HTTPS API app using Passport for authentication via Bearer scheme with a MariaDB/MySQL backend.",
+  "description": "Express 4.x HTTPS API app using Passport Bearer tokens with a MySQL backend.",
   "keywords": [
     "example",
     "express",
@@ -13,13 +13,13 @@
   "scripts": { "start" : "node app.js" },
   "author": "Jeremy Bradbury",
   "license": "Unlicense",
-  "homepage": "https://github.com/jeremybradbury/express-4.x-http-bearer-example",
+  "homepage": "https://github.com/jeremybradbury/express4-https-bearer-token-mysql-api",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jeremybradbury/express-4.x-http-bearer-example.git"
+    "url": "git://github.com/jeremybradbury/express4-https-bearer-token-mysql-api.git"
   },
   "bugs": {
-    "url": "https://github.com/jeremybradbury/express-4.x-http-bearer-example/issues"
+    "url": "https://github.com/jeremybradbury/express4-https-bearer-token-mysql-api/issues"
   },
   "dependencies": {
     "mysql": "^2.5.5",
