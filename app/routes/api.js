@@ -50,36 +50,36 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     });
   router.route("/users")
     .get((req, res, next) => { // Index Users (no limit set... yet)
-        var query = "SELECT ??, ?? FROM ??";
-        var table = ["id","email","users"];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
+      var query = "SELECT ??, ?? FROM ??";
+      var table = ["id","email","users"];
+      query = mysql.format(query,table);
+      connection.query(query,function(err,rows){
+        if(err) {
+          meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+          res.json(meJSON);
+          app.errorLogger.error(meJSON.Message+err);
+        } else {
+          meJSON = {"Error" : false, "Message" : "Success", "Users" : rows};
+          res.json(meJSON);
+          app.errorLogger.info(meJSON.Message,rows);
+        }
+      });
+    })
+    .post((req, res, next) => { // Create new User
+      var query = "INSERT INTO ??(??,??) VALUES (?,?)";
+      var table = ["users","email","password",req.body.email,md5(req.body.password)];
+      query = mysql.format(query,table);
+      connection.query(query,function(err,rows){
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
             app.errorLogger.error(meJSON.Message+err);
           } else {
-            meJSON = {"Error" : false, "Message" : "Success", "Users" : rows};
+            meJSON = {"Error" : false, "Message" : "User Added !"};
             res.json(meJSON);
-            app.errorLogger.info(meJSON.Message,rows);
+            app.errorLogger.info(meJSON.Message);
           }
-        });
-      })
-    .post((req, res, next) => { // Create new User
-        var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-        var table = ["users","email","password",req.body.email,md5(req.body.password)];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-            if(err) {
-              meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-              res.json(meJSON);
-              app.errorLogger.error(meJSON.Message+err);
-            } else {
-              meJSON = {"Error" : false, "Message" : "User Added !"};
-              res.json(meJSON);
-              app.errorLogger.info(meJSON.Message);
-            }
-        });
+      });
     })
     .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update password by email Documentation
   router.route("/user/:id")
