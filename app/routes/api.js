@@ -23,23 +23,23 @@ function passwordReset(req, res, next, connection, md5, app) {
 
 REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     // api routes
-    router.route('/')
+    router.route("/")
         .get((req, res) => {
             var msg = {
-                description: 'This is a list of available endpoints and documentation.',
+                description: "This is a list of available endpoints and documentation.",
                 endpoints:  {
                     User: {
-                        create: { POST:   app.baseUrl + '/api/users/' },
-                        read:   { GET:    app.baseUrl + '/api/user/:id' },
-                        update: { PUT:    app.baseUrl + '/api/user/:id' },
-                        delete: { DELETE: app.baseUrl + '/api/user/:id' },
-                        index:  { GET:    app.baseUrl + '/api/users/' }
+                        create: { POST:   app.baseUrl + "/api/users/" },
+                        read:   { GET:    app.baseUrl + "/api/user/:id" },
+                        update: { PUT:    app.baseUrl + "/api/user/:id" },
+                        delete: { DELETE: app.baseUrl + "/api/user/:id" },
+                        index:  { GET:    app.baseUrl + "/api/users/" }
                     }
                 }
             };
             res.json({ Error: false, Message: msg });
     });
-    router.route('/users')
+    router.route("/users")
         .get((req, res, next) => { // Index
             var query = "SELECT ??, ?? FROM ??";
             var table = ["id","email","users"];
@@ -73,7 +73,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
             });
         })
         .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
-    router.route('/user/:id')
+    router.route("/user/:id")
         .get((req, res, next) => { // Read
             var query = "SELECT * FROM ?? WHERE ??=?";
             var table = ["users","user_id",req.params.id];
@@ -106,7 +106,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
                 }
             });
         });
-    router.route('/password-reset')
+    router.route("/password-reset")
         .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update
 }
 
