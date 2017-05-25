@@ -3,7 +3,6 @@ var mysql = require("mysql"), md5 = require("MD5");
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
-var generate = require('xkcd-pass-plus');
 // create the venue
 var app = express();
 function REST(){
@@ -55,6 +54,9 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
+// make some invitations
+module.exports.newPass = newPass = require("./app/lib/xpg");
+console.log(newPass());
 // check token in database, return user
 function findByToken(connection, md5, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
