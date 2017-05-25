@@ -3,13 +3,14 @@ var mysql = require("mysql"), md5 = require("MD5");
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
+var generate = require('xkcd-pass-plus');
 // create the venue
 var app = express();
 function REST(){
   var self = this;
   self.connectMysql();
 };
-// log access
+// setup cameras: log access 
 var logDirectory = path.join(__dirname, "app/log");
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory); // ensure log directory exists
 var accessLogStream = rfs("access.log", { // create a rotating write stream
@@ -26,7 +27,7 @@ accessLogger.token("remote-user", (req) => {
 });
 app.accessLogger = accessLogger;
 app.use(accessLogger("combined", {stream: accessLogStream})); // morgan likes to log to a rotating file stream
-// log errors
+// find someone to keep the peace/noise down: log errors
 var errorLogger = new winston.Logger({
   transports: [
     new winston.transports.File({ // winston likes to log to a rotating file too
@@ -73,7 +74,7 @@ function findByToken(connection, md5, app, token, cb) {
     }
   });
 }
-// single connection pool for app
+// light up the pool: single connection pool for app
 REST.prototype.connectMysql = function() {
   var self = this;
   var pool = mysql.createPool(require("./app/config/database.json"));
@@ -85,7 +86,7 @@ REST.prototype.connectMysql = function() {
     }
   });
 }
-// setup for the party, mostly give dircetions
+// setup for the party, mostly give dircetions: routes and config
 REST.prototype.configureExpress = function(connection) {
   var self = this;
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -133,7 +134,7 @@ REST.prototype.configureExpress = function(connection) {
     }));
   self.startServer();
 }
-// secure with https
+// close the blinds: secure with https
 REST.prototype.startServer = function() {
     // ideally use a real cert OR generate a new self signed cert quikly (on linux/mac) like this:
       // `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes`
@@ -143,10 +144,10 @@ REST.prototype.startServer = function() {
         app.errorLogger.info("Secure Server listening on port 3443");
     });
 }
-// handle connection errors
+// parking attendant on duty: handle connection errors
 REST.prototype.stop = function(err) {
   app.errorLogger.error("ISSUE WITH MYSQL \n" + err);
   process.exit(1);
 }
-// time to get the party started
+// get this party started
 new REST();
