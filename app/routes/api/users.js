@@ -1,5 +1,23 @@
 var mysql = require("mysql");
 // TODO: POST `/api/request-token` endpoint required: email/password
+// used for duplicate endpoints: PUT `/api/users` & PUT `/api/password-reset`
+function passwordReset(req, res, next, connection, md5, app) {
+  // TODO: generate password and email it to user
+  var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+  var table = ["users","password",md5(req.body.password),"email",req.body.email];
+  query = mysql.format(query,table);
+  connection.query(query,function(err,rows){
+    if(err) {
+      meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+      res.json(meJSON);
+      app.errorLogger.error(meJSON.Message+err);
+    } else {
+      meJSON = {"Error" : false, "Message" : "Updated the password for email "+req.body.email};
+      res.json(meJSON);
+      app.errorLogger.info(meJSON.Message);
+    }
+  });
+}
 module.exports = function(router,connection,md5,app) {
   var self = this;
   // api routes
