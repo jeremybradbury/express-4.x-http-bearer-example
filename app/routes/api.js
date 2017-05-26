@@ -32,7 +32,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
       res.json({ Error: false, Message: msg });
     });
   // User routes
-  var userRoutes = require("./api/users")(router,connection,md5,app);
+  var userRoutes = require("./api/users")(router,connection,md5,app); // duplicate & modify this line and `app/routes/api/user.js` for more API tables/objects
   
 }
 module.exports = REST_ROUTER;

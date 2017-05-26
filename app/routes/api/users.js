@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 // TODO: POST `/api/request-token` endpoint required: email/password
+
 // used for duplicate endpoints: PUT `/api/users` & PUT `/api/password-reset`
 function passwordReset(req, res, next, connection, md5, app) {
   // TODO: generate password and email it to user

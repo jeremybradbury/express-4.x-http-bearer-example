@@ -26,7 +26,7 @@ accessLogger.token("remote-user", (req) => {
 });
 app.accessLogger = accessLogger;
 app.use(accessLogger("combined", {stream: accessLogStream})); // morgan likes to log to a rotating file stream
-// find someone to keep the peace/noise down: log errors
+// winston writes everything down: log errors
 var errorLogger = new winston.Logger({
   transports: [
     new winston.transports.File({ // winston likes to log to a rotating file too
@@ -54,10 +54,10 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
-// make some invitations
+// invite people: generate strong passwords
 module.exports.newPass = newPass = require("./app/lib/xpg");
-console.log(newPass());
-// check token in database, return user
+//console.log(newPass());
+// securtiy checks the guestlist: check token in database, return user
 function findByToken(connection, md5, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
   var table = ["token","email","id","user_tokens","users","user_id_fk","token",token];
