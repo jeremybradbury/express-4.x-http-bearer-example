@@ -1,26 +1,24 @@
+const mailer = require('nodemailer');
 var mysql = require("mysql");
+// create reusable transporter object using the default SMTP transport
+var gmail = mailer.createTransport({
+    service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
+    auth: require('../../config/email.json')
+});
+
 // TODO: POST `/api/request-token` endpoint required: email/password
 
 // used for duplicate endpoints: PUT `/api/users` & PUT `/api/password-reset`
-function passwordReset(req, res, next, connection, md5, app) {
-  // TODO: generate password and email it to user
-  var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-  var table = ["users","password",md5(req.body.password),"email",req.body.email];
-  query = mysql.format(query,table);
-  connection.query(query,function(err,rows){
-    if(err) {
-      meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-      res.json(meJSON);
-      app.errorLogger.error(meJSON.Message+err);
-    } else {
-      meJSON = {"Error" : false, "Message" : "Updated the password for email "+req.body.email};
-      res.json(meJSON);
-      app.errorLogger.info(meJSON.Message);
-    }
-  });
+function sendPass(pass,email) {
+  return {
+          from: '"Jeremy Bradbury" <jdbradbury@gmail.com>', // sender address
+          to: email, // account to update
+          subject: 'Important account update', // Subject line
+          text: 'Your password is:\r\n'+pass, // plain text body
+          html: 'Your password is:<br><b>'+pass+'</b>' // html body
+      };
 }
 module.exports = function(router,connection,md5,app) {
-  var self = this;
   // api routes
   router.route("/users")
     .get((req, res, next) => { // Index Users (no limit set... yet)
@@ -49,13 +47,12 @@ module.exports = function(router,connection,md5,app) {
             res.json(meJSON);
             app.errorLogger.error(meJSON.Message+err);
           } else {
-            meJSON = {"Error" : false, "Message" : "User Added !"};
+            meJSON = {"Error" : false, "Message" : "User created!"};
             res.json(meJSON);
             app.errorLogger.info(meJSON.Message);
           }
       });
-    })
-    .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update password by email Endpoint
+    });
   router.route("/user/:id")
     .get((req, res, next) => { // Read User by id Endpoint
       var query = "SELECT * FROM ?? WHERE ??=?";
@@ -83,13 +80,39 @@ module.exports = function(router,connection,md5,app) {
           res.json(meJSON);
           app.errorLogger.error(meJSON.Message+err);
         } else {
-          meJSON = {"Error" : false, "Message" : "Deleted the user "+req.params.id};
+          meJSON = {"Error" : false, "Message" : "Deleted User: "+req.params.id};
           res.json(meJSON);
           app.errorLogger.info(meJSON.Message);
         }
       });
     });
   router.route("/password-reset")
-    .put((req, res, next) => { passwordReset(req,res,next,connection,md5,app) }); // Update password by email Endpoint
+    .put((req, res, next) => { // Update User password by email Endpoint
+      var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+      var pass = app.newPass();
+      var email = sendPass(pass,req.body.email);
+      gmail.sendMail(email, function(err,info){
+        if(err) {
+          var meJSON = {"Error" : true, "Message" : "Email Error: "};
+          res.json(meJSON);
+          app.errorLogger.error(meJSON.Message,err+"\r\n"+info);
+        } else {
+          // TODO: replace md5 with bcryptjs
+          var table = ["users","password",md5(pass),"email",req.body.email];
+          query = mysql.format(query,table);
+          connection.query(query,function(err,rows){
+            if(err) {
+              var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+              res.json(meJSON);
+              app.errorLogger.error(meJSON.Message+err);
+            } else {
+              var meJSON = {"Error" : false, "Message" : "Check your email! We've sent a password for: "+req.body.email};
+              res.json(meJSON);
+              app.errorLogger.info(meJSON.Message);
+            } 
+          })
+        }
+      });     
+    }); 
   return this;
 }
