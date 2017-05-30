@@ -54,9 +54,6 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
-// invite people: generate strong passwords
-app.newPass = newPass = require("./app/lib/xpg");
-//console.log(newPass());
 // securtiy checks the guestlist: check token in database, return user
 function findByToken(connection, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";

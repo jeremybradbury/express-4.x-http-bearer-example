@@ -2,8 +2,8 @@ const mailer = require('nodemailer');
 var mysql = require("mysql");
 var bcrypt = require('bcryptjs');
 var gmail = mailer.createTransport({
-    service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
-    auth: require('../config/email.json')
+  service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
+  auth: require('../config/email.json')
 });
 function sendPass(pass,email) {
   return {
@@ -24,7 +24,7 @@ module.exports = function(router,connection,app) {
         if(err) {
           var meJSON = {"Error" : true, "Message" : "Email Error: "};
           res.json(meJSON);
-          app.errorLogger.error(meJSON.Message,err+"\r\n"+info);
+          app.errorLogger.error(meJSON.Message+err,info);
         } else {
           bcrypt.hash(pass, 12, function(err, hash) {
             var table = ["users","password",hash,"email",req.body.email];
