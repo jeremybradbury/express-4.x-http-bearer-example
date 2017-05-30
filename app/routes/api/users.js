@@ -2,8 +2,8 @@ const mailer = require('nodemailer');
 var mysql = require("mysql");
 // create reusable transporter object using the default SMTP transport
 var gmail = mailer.createTransport({
-    service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
-    auth: require('../../config/email.json')
+  service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
+  auth: require('../../config/email.json')
 });
 
 // TODO: POST `/api/request-token` endpoint required: email/password
@@ -11,12 +11,12 @@ var gmail = mailer.createTransport({
 // used for duplicate endpoints: PUT `/api/users` & PUT `/api/password-reset`
 function sendPass(pass,email) {
   return {
-          from: '"Jeremy Bradbury" <jdbradbury@gmail.com>', // sender address
-          to: email, // account to update
-          subject: 'Important account update', // Subject line
-          text: 'Your password is:\r\n'+pass, // plain text body
-          html: 'Your password is:<br><b>'+pass+'</b>' // html body
-      };
+    from: '"Jeremy Bradbury" <jdbradbury@gmail.com>', // sender address
+    to: email, // account to update
+    subject: 'Important account update', // Subject line
+    text: 'Your password is:\r\n'+pass, // plain text body
+    html: 'Your password is:<br><b>'+pass+'</b>' // html body
+  };
 }
 module.exports = function(router,connection,md5,app) {
   // api routes
@@ -104,9 +104,9 @@ module.exports = function(router,connection,md5,app) {
       var email = sendPass(pass,req.body.email);
       gmail.sendMail(email, function(err,info){
         if(err) {
-          var meJSON = {"Error" : true, "Message" : "Email Error: "};
+          var meJSON = {"Error" : true, "Message" : "Error senfing email. "};
           res.json(meJSON);
-          app.errorLogger.error(meJSON.Message,err+"\r\n"+info);
+          app.errorLogger.error(meJSON.Message+ err, info);
         } else {
           // TODO: replace md5 with bcryptjs
           var table = ["users","password",md5(pass),"email",req.body.email];
@@ -117,7 +117,7 @@ module.exports = function(router,connection,md5,app) {
               res.json(meJSON);
               app.errorLogger.error(meJSON.Message+err);
             } else {
-              var meJSON = {"Error" : false, "Message" : "Check your email! We've sent a password for: "+req.body.email};
+              var meJSON = {"Error" : false, "Message" : "Check your email! We sent a new password to: "+req.body.email};
               res.json(meJSON);
               app.errorLogger.info(meJSON.Message);
             } 
