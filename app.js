@@ -55,7 +55,7 @@ module.exports.stream = {
 };
 app.errorLogger = errorLogger;
 // invite people: generate strong passwords
-module.exports.newPass = newPass = require("./app/lib/xpg");
+app.newPass = newPass = require("./app/lib/xpg");
 //console.log(newPass());
 // securtiy checks the guestlist: check token in database, return user
 function findByToken(connection, md5, app, token, cb) {
@@ -97,14 +97,19 @@ REST.prototype.configureExpress = function(connection) {
   app.baseUrl = "https://localhost:3443"; // global mostly for documentation
   // ## begin routes ## //
   
-  // /api routes for the secure API 
+  // /api/* routes for the secure API 
   var routeApi = express.Router(); // create API router
   var api = require("./app/routes/api"); // api routes are defined here
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
   var api_router = new api(routeApi,connection,md5,app); // create api.js route module
   
-  // /docs routes for the Documentation (no Auth required) 
-  	// [TODO] I should probably add Auth here, but expose an endpoint for token docs.
+   // /password-reset/ no token or password required, only requires email. generate, then email new password
+  var routePwr = express.Router(); // create Password Reset router
+  app.use("/password-reset", routePwr); // no token or password required, just email
+  var pwr_router = require("./app/routes/password-reset")(routePwr,connection,md5,app); // create password-reset.js route module 
+  
+  // /docs/* routes for the Documentation (no Auth required) 
+  	// [TODO] I should probably add Auth here, but expose an endpoint for token/user creation docs.
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
   app.use("/docs", routeDocs); // no Auth added for these routes
