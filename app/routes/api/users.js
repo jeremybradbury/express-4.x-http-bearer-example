@@ -39,18 +39,29 @@ module.exports = function(router,connection,md5,app) {
     })
     .post((req, res, next) => { // Create new User
       var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-      var table = ["users","email","password",req.body.email,md5(req.body.password)];
-      query = mysql.format(query,table);
-      connection.query(query,function(err,rows){
-          if(err) {
-            meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-            res.json(meJSON);
-            app.errorLogger.error(meJSON.Message+err);
-          } else {
-            meJSON = {"Error" : false, "Message" : "User created!"};
-            res.json(meJSON);
-            app.errorLogger.info(meJSON.Message);
-          }
+      var pass = app.newPass();
+      var email = sendPass(pass,req.body.email);
+      gmail.sendMail(email, function(err,info){
+        if(err) {
+          var meJSON = {"Error" : true, "Message" : "Error senfing email. "};
+          res.json(meJSON);
+          app.errorLogger.error(meJSON.Message + err, info);
+        } else {
+          // TODO: replace md5 with bcryptjs
+          var table = ["users","email","password",req.body.email,md5(pass)];
+          query = mysql.format(query,table);
+          connection.query(query,function(err,rows){
+            if(err) {
+              meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+              res.json(meJSON);
+              app.errorLogger.error(meJSON.Message+err);
+            } else {
+              var meJSON = {"Error" : false, "Message" : "Check your email! We sent a new password to: "+req.body.email};
+              res.json(meJSON);
+              app.errorLogger.info(meJSON.Message);
+            }
+          });
+        }
       });
     });
   router.route("/user/:id")
