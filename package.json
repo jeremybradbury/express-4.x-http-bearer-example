@@ -24,9 +24,9 @@
     "url": "https://github.com/jeremybradbury/express4-https-bearer-token-mysql-api/issues"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.0",
     "express": "^4.13.3",
-    "md5": "^2.0.0",
     "morgan": "^1.6.1",
     "mysql": "^2.5.5",
     "nodemailer": "^4.0.1",

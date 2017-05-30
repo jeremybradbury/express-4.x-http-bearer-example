@@ -1,5 +1,5 @@
 var mysql = require("mysql");
-module.exports = function (router,connection,md5,app) {
+module.exports = function (router,connection,app) {
   // docs routes
   router.route("/users")
     .get((req, res, next) => { // Index Users

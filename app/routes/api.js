@@ -1,10 +1,10 @@
 var mysql = require("mysql");
-function REST_ROUTER(router,connection,md5,app) {
+function REST_ROUTER(router,connection,app) {
   var self = this;
-  self.handleRoutes(router,connection,md5,app);
+  self.handleRoutes(router,connection,app);
 }
 // TODO: POST `/api/request-token` endpoint required: email/password
-REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
+REST_ROUTER.prototype.handleRoutes = (router,connection,app) => {
   // API home routes
   router.route("/")
     .get((req, res) => {
@@ -32,7 +32,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
       res.json({ Error: false, Message: msg });
     });
   // User routes
-  var userRoutes = require("./api/users")(router,connection,md5,app); // duplicate & modify this line and `app/routes/api/user.js` for more API tables/objects
+  var userRoutes = require("./api/users")(router,connection,app); // duplicate & modify this line and `app/routes/api/user.js` for more API tables/objects
   
 }
 module.exports = REST_ROUTER;

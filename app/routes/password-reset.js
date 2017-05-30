@@ -1,5 +1,6 @@
 const mailer = require('nodemailer');
 var mysql = require("mysql");
+var bcrypt = require('bcryptjs');
 var gmail = mailer.createTransport({
     service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
     auth: require('../config/email.json')
@@ -13,7 +14,7 @@ function sendPass(pass,email) {
     html: 'Your password is:<br><b>'+pass+'</b>' // html body
   };
 }
-module.exports = function(router,connection,md5,app) {
+module.exports = function(router,connection,app) {
   router.route("/")
     .put((req, res, next) => { // Password reset by email Endpoint
       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
@@ -25,20 +26,21 @@ module.exports = function(router,connection,md5,app) {
           res.json(meJSON);
           app.errorLogger.error(meJSON.Message,err+"\r\n"+info);
         } else {
-          // TODO: replace md5 with bcryptjs
-          var table = ["users","password",md5(pass),"email",req.body.email];
-          query = mysql.format(query,table);
-          connection.query(query,function(err,rows){
-            if(err) {
-              var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-              res.json(meJSON);
-              app.errorLogger.error(meJSON.Message+err);
-            } else {
-              var meJSON = {"Error" : false, "Message" : "Check your email! We've sent a password for: "+req.body.email};
-              res.json(meJSON);
-              app.errorLogger.info(meJSON.Message);
-            } 
-          })
+          bcrypt.hash(pass, 12, function(err, hash) {
+            var table = ["users","password",hash,"email",req.body.email];
+            query = mysql.format(query,table);
+            connection.query(query,function(err,rows){
+              if(err) {
+                var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+                res.json(meJSON);
+                app.errorLogger.error(meJSON.Message+err);
+              } else {
+                var meJSON = {"Error" : false, "Message" : "Check your email! We've sent a password for: "+req.body.email};
+                res.json(meJSON);
+                app.errorLogger.info(meJSON.Message);
+              } 
+            }) 
+          });
         }
       });     
     }); 
