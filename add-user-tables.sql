@@ -37,8 +37,8 @@ UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`users` (
   `id` int(70) NOT NULL AUTO_INCREMENT,
-  `email` varchar(45) NOT NULL DEFAULT '',
-  `password` varchar(45) DEFAULT NULL,
+  `email` varchar(150) NOT NULL DEFAULT '',
+  `password` varchar(65) DEFAULT NULL,
   `join_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_email_UNIQUE` (`email`)
@@ -48,7 +48,7 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
 INSERT INTO `users` (`id`, `email`, `password`, `join_date`)
-VALUES (1,'jeremy@example.com','941f8c79b34be1dba86024719b47718e','2000-01-01 00:00:01');
+VALUES (1,'jeremy@example.com','$2a$12$rMedzRDIicSJ7Sn/DKd6eOefAa2lHHsQrLoIEJIVSrsDljgZesGIO','2000-01-01 00:00:01');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

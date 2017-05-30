@@ -1,0 +1,4 @@
+{ // add your gmail and application password, rename to email.json AND make sure to remove this comment (comments not valid in .json)
+  "user": "my.gmail.addy@gmail.com",
+  "pass": "myapplicationpassword"
+}

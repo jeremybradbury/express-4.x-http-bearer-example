@@ -1,8 +1,8 @@
-function REST_ROUTER(router,connection,md5,app) {
+function REST_ROUTER(router,connection,app) {
   var self = this;
-  self.handleRoutes(router,connection,md5,app);
+  self.handleRoutes(router,connection,app);
 }
-REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
+REST_ROUTER.prototype.handleRoutes = (router,connection,app) => {
   // Docs home routes
   router.route("/")
     .get((req, res) => {
@@ -30,6 +30,6 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
     res.json({ Error: false, Message: msg });
     });
   // User routes
-  var userRoutes = require("./docs/users")(router,connection,md5,app);
+  var userRoutes = require("./docs/users")(router,connection,app);
 }
 module.exports = REST_ROUTER;

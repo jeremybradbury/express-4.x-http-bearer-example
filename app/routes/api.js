@@ -1,27 +1,10 @@
 var mysql = require("mysql");
-function REST_ROUTER(router,connection,md5,app) {
+function REST_ROUTER(router,connection,app) {
   var self = this;
-  self.handleRoutes(router,connection,md5,app);
-}
-// used for duplicate endpoints: PUT `/api/users` & PUT `/api/password-reset`
-function passwordReset(req, res, next, connection, md5, app) {
-  var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-  var table = ["users","password",md5(req.body.password),"email",req.body.email];
-  query = mysql.format(query,table);
-  connection.query(query,function(err,rows){
-    if(err) {
-      meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-      res.json(meJSON);
-      app.errorLogger.error(meJSON.Message+err);
-    } else {
-      meJSON = {"Error" : false, "Message" : "Updated the password for email "+req.body.email};
-      res.json(meJSON);
-      app.errorLogger.info(meJSON.Message);
-    }
-  });
+  self.handleRoutes(router,connection,app);
 }
 // TODO: POST `/api/request-token` endpoint required: email/password
-REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
+REST_ROUTER.prototype.handleRoutes = (router,connection,app) => {
   // API home routes
   router.route("/")
     .get((req, res) => {
@@ -49,7 +32,7 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,md5,app) => {
       res.json({ Error: false, Message: msg });
     });
   // User routes
-  var userRoutes = require("./api/users")(router,connection,md5,app);
+  var userRoutes = require("./api/users")(router,connection,app); // duplicate & modify this line and `app/routes/api/user.js` for more API tables/objects
   
 }
 module.exports = REST_ROUTER;

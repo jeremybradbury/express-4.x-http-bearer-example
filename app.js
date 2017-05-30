@@ -1,5 +1,5 @@
 var express = require("express");
-var mysql = require("mysql"), md5 = require("MD5");
+var mysql = require("mysql");
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
@@ -9,7 +9,7 @@ function REST(){
   var self = this;
   self.connectMysql();
 };
-// log access
+// setup cameras: log access 
 var logDirectory = path.join(__dirname, "app/log");
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory); // ensure log directory exists
 var accessLogStream = rfs("access.log", { // create a rotating write stream
@@ -26,7 +26,7 @@ accessLogger.token("remote-user", (req) => {
 });
 app.accessLogger = accessLogger;
 app.use(accessLogger("combined", {stream: accessLogStream})); // morgan likes to log to a rotating file stream
-// log errors
+// winston writes everything down: log errors
 var errorLogger = new winston.Logger({
   transports: [
     new winston.transports.File({ // winston likes to log to a rotating file too
@@ -54,8 +54,8 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
-// check token in database, return user
-function findByToken(connection, md5, app, token, cb) {
+// securtiy checks the guestlist: check token in database, return user
+function findByToken(connection, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
   var table = ["token","email","id","user_tokens","users","user_id_fk","token",token];
   query = mysql.format(query,table);
@@ -73,7 +73,7 @@ function findByToken(connection, md5, app, token, cb) {
     }
   });
 }
-// single connection pool for app
+// light up the pool: single connection pool for app
 REST.prototype.connectMysql = function() {
   var self = this;
   var pool = mysql.createPool(require("./app/config/database.json"));
@@ -85,7 +85,7 @@ REST.prototype.connectMysql = function() {
     }
   });
 }
-// setup for the party, mostly give dircetions
+// setup for the party, mostly give dircetions: routes and config
 REST.prototype.configureExpress = function(connection) {
   var self = this;
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -94,18 +94,23 @@ REST.prototype.configureExpress = function(connection) {
   app.baseUrl = "https://localhost:3443"; // global mostly for documentation
   // ## begin routes ## //
   
-  // /api routes for the secure API 
+  // /api/* routes for the secure API 
   var routeApi = express.Router(); // create API router
   var api = require("./app/routes/api"); // api routes are defined here
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
-  var api_router = new api(routeApi,connection,md5,app); // create api.js route module
+  var api_router = new api(routeApi,connection,app); // create api.js route module
   
-  // /docs routes for the Documentation (no Auth required) 
-  	// [TODO] I should probably add Auth here, but expose an endpoint for token docs.
+   // /password-reset/ no token or password required, only requires email. generate, then email new password
+  var routePwr = express.Router(); // create Password Reset router
+  app.use("/password-reset", routePwr); // no token or password required, just email
+  var pwr_router = require("./app/routes/password-reset")(routePwr,connection,app); // create password-reset.js route module 
+  
+  // /docs/* routes for the Documentation (no Auth required) 
+  	// [TODO] I should probably add Auth here, but expose an endpoint for token/user creation docs.
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
   app.use("/docs", routeDocs); // no Auth added for these routes
-  var docs_router = new docs(routeDocs,connection,md5,app); // create docs.js route module
+  var docs_router = new docs(routeDocs,connection,app); // create docs.js route module
   
   /* begin removable comments: to add more route subfolders here using instructions below */
     // FIRST: copy and rename /app/routes/docs.js to /app/routes/mypath.js
@@ -117,7 +122,7 @@ REST.prototype.configureExpress = function(connection) {
       // var routeMypath = express.Router(); // create Mypath router
       // var mypath = require("./app/routes/mypath"); // mypath routes are defined here
       // app.use("/mypath", Auth, routeMypath); // use Auth bearer middleware for these routes (optional)
-      // var mypath_router = new docs(routeMypath,connection,md5,app);// create mypath.js route module
+      // var mypath_router = new docs(routeMypath,connection,app);// create mypath.js route module
     //* end example routes *//
   /* end removable comments */
       
@@ -125,7 +130,7 @@ REST.prototype.configureExpress = function(connection) {
   // guard the doors
   passport.use(new Strategy(
     (token, cb) => {
-     findByToken(connection, md5, app, token, (err, user) => {
+     findByToken(connection, app, token, (err, user) => {
        if (err) { return cb(err); }
        if (!user) { return cb(null, false); }
        return cb(null, user);
@@ -133,7 +138,7 @@ REST.prototype.configureExpress = function(connection) {
     }));
   self.startServer();
 }
-// secure with https
+// close the blinds: secure with https
 REST.prototype.startServer = function() {
     // ideally use a real cert OR generate a new self signed cert quikly (on linux/mac) like this:
       // `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes`
@@ -143,10 +148,10 @@ REST.prototype.startServer = function() {
         app.errorLogger.info("Secure Server listening on port 3443");
     });
 }
-// handle connection errors
+// parking attendant on duty: handle connection errors
 REST.prototype.stop = function(err) {
   app.errorLogger.error("ISSUE WITH MYSQL \n" + err);
   process.exit(1);
 }
-// time to get the party started
+// get this party started
 new REST();
