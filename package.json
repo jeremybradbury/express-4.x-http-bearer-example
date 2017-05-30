@@ -1,6 +1,6 @@
 {
   "name": "express4-https-bearer-token-mysql-api",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Express 4.x HTTPS API app using Passport Bearer tokens with a MySQL backend.",
   "keywords": [
     "example",
@@ -15,7 +15,7 @@
   },
   "author": "Jeremy Bradbury",
   "license": "Unlicense",
-  "homepage": "https://github.com/jeremybradbury/express4-https-bearer-token-mysql-api",
+  "homepage": "https://jeremybradbury.github.io/express4-https-bearer-token-mysql-api",
   "repository": {
     "type": "git",
     "url": "git://github.com/jeremybradbury/express4-https-bearer-token-mysql-api.git"
