@@ -2,7 +2,7 @@ var mysql = require("mysql"), crypto = require('crypto'), bcrypt = require('bcry
 module.exports = function (connection,req,cb) {
   if(req.body && req.body.email){
     var query = "SELECT * FROM ?? LEFT JOIN ?? ON (??.??=??.??) WHERE ?? = ?";
-    var table = ["users","user_tokens","users","id","user_tokens","user_id_fk","email",req.body.email]
+    var table = ["user","user_token","user","id","user_token","user_id_fk","email",req.body.email]
     query = mysql.format(query,table);
     connection.query(query,function(err,rows){
       if(!err && rows.length > 0) {

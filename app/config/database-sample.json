@@ -3,6 +3,6 @@
 "host":"localhost",
 "user": "root",
 "password": "", 
-"database": "restful_api_demo", 
+"database": "restful_api", 
 "debug": false
 }

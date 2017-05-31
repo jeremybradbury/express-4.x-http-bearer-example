@@ -23,27 +23,33 @@ module.exports = function(router,connection,app) {
           res.json(meJSON);
           app.errorLogger.error(meJSON.Message);
         } else {
-          var token = genToken();
-          // Upsert
-          if(user.token != null){ // Update 
-            var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-            var table = ["user_tokens","token",token,"user_id_fk",user.id];
-          } else { // Create
-            var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-            var table = ["user_tokens","token","user_id_fk",token,user.id];
+          if(user.status == 'active'){
+            var token = genToken();
+            // Upsert
+            if(user.token != null){ // Update 
+              var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+              var table = ["user_token","token",token,"user_id_fk",user.id];
+            } else { // Create
+              var query = "INSERT INTO ??(??,??) VALUES (?,?)";
+              var table = ["user_token","token","user_id_fk",token,user.id];
+            }
+            query = mysql.format(query,table);
+            connection.query(query,function(err,rows){
+              if(err) {
+                var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+                res.json(meJSON);
+                app.errorLogger.error(meJSON.Message+err);
+              } else {
+                var meJSON = {"Error" : false, "Message" : "This is your new token. Save it now! It is needed for all API requests!","Token":token};
+                res.json(meJSON);
+                app.errorLogger.info(meJSON.Message);
+              } 
+            });
+          } else {
+            var meJSON = {"Error" : true, "Message" : "Sorry, this account has been disabled. You may not generate a new token at this time."};
+            res.json(meJSON);
+            app.errorLogger.error(meJSON.Message+err);
           }
-          query = mysql.format(query,table);
-          connection.query(query,function(err,rows){
-            if(err) {
-              var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
-              res.json(meJSON);
-              app.errorLogger.error(meJSON.Message+err);
-            } else {
-              var meJSON = {"Error" : false, "Message" : "This is your new token. Save it now! It is needed for all API requests!","Token":token};
-              res.json(meJSON);
-              app.errorLogger.info(meJSON.Message);
-            } 
-          });
         }
       });
     }); 
