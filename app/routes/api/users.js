@@ -20,7 +20,7 @@ module.exports = function(router,connection,app) {
   router.route("/users")
     .get((req, res, next) => { // Index Users (no limit set... yet)
       var query = "SELECT ??, ?? FROM ??";
-      var table = ["id","email","users"];
+      var table = ["id","email","user"];
       query = mysql.format(query,table);
       connection.query(query,function(err,rows){
         if(err) {
@@ -45,7 +45,7 @@ module.exports = function(router,connection,app) {
           app.errorLogger.error(meJSON.Message + err, info);
         } else {
           bcrypt.hash(pass, 12, function(err, hash) {
-            var table = ["users","email","password",req.body.email,hash];
+            var table = ["user","email","password",req.body.email,hash];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
               if(err) {
@@ -65,7 +65,7 @@ module.exports = function(router,connection,app) {
   router.route("/user/:id")
     .get((req, res, next) => { // Read User by id Endpoint
       var query = "SELECT * FROM ?? WHERE ??=?";
-      var table = ["users","user_id",req.params.id];
+      var table = ["user","user_id",req.params.id];
       query = mysql.format(query,table);
       connection.query(query,function(err,rows){
         if(err) {
@@ -81,7 +81,7 @@ module.exports = function(router,connection,app) {
     })
     .delete((req, res, next) => { // Delete User by id Endpoint
       var query = "DELETE from ?? WHERE ??=?";
-      var table = ["users","user_id",req.params.id];
+      var table = ["user","user_id",req.params.id];
       query = mysql.format(query,table);
       connection.query(query,function(err,rows){
         if(err) {
@@ -107,7 +107,7 @@ module.exports = function(router,connection,app) {
           app.errorLogger.error(meJSON.Message+ err, info);
         } else {
           bcrypt.hash(pass, 12, function(err, hash) {
-            var table = ["users","password",hash,"email",req.body.email];
+            var table = ["user","password",hash,"email",req.body.email];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
               if(err) {
@@ -128,7 +128,7 @@ module.exports = function(router,connection,app) {
     .put((req, res, next) => { // Update auth token with current auth token
       var token = genToken();
       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-      var table = ["user_tokens","token",token,"token",req.user.token];
+      var table = ["user_token","token",token,"token",req.user.token];
       query = mysql.format(query,table);
       connection.query(query,function(err,rows){
         if(err) {

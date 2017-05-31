@@ -10,32 +10,41 @@
 CREATE SCHEMA IF NOT EXISTS `restful_api_demo` DEFAULT CHARACTER SET latin1 ;
 USE `restful_api_demo` ;
 
-# table user_tokens
+# table user_token
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_tokens` (
+CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_token` (
   `token_id` int(70) NOT NULL AUTO_INCREMENT,
   `user_id_fk` int(70) NOT NULL,
   `token` varchar(600) DEFAULT NULL,
   PRIMARY KEY (`token_id`),
   UNIQUE KEY `user_id_fk_UNIQUE` (`user_id_fk`),
-  CONSTRAINT `user_info_foreign_key` FOREIGN KEY (`user_id_fk`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `user_info_foreign_key` FOREIGN KEY (`user_id_fk`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `user_tokens` WRITE;
-/*!40000 ALTER TABLE `user_tokens` DISABLE KEYS */;
+LOCK TABLES `user_token` WRITE;
+/*!40000 ALTER TABLE `user_token` DISABLE KEYS */;
 
-INSERT INTO `user_tokens` (`token_id`, `user_id_fk`, `token`)
-VALUES (1,1,'123456789');
+INSERT INTO `user_token` (`id`, `user_id_fk`, `token`, `expires_at`)
+VALUES
+	(1,1,'6d9e2fb41e0b27ef5708b5f83184f514366317ec317c8c867fafa8930eb4d6c11974789d2ae3bf5151232fd1c736a4fc965089d8621d4874b8a734550e4ad9a03488d49ee37f4037f7ccf39d00ee8ef5c52524bedb6b6b5060d73bc39baaba34de6842d0c34b4e6ca737d89034179637f04f2047c5a227b764ecf5c53ecaa86c2ec8b039e94c8e325de9e764658724b648161e93e09c679dc15e51ffa922da907d7f21f6ae8f2c16b9f084fc8a84f48eb90953960b646232d4d7b7268018191658a8039f9e475c8ce7364aff5e9c472461ba72362a660ab6ea3938aa6f7d9896329685879e983734ea935dd0bb268566de76a9d2392e4fbacff4026b79dc07e89eae8a4342f1','2017-06-06 20:46:30'),
+	(2,2,'295ba2925a7015ff5726ca57e5560c0bac85c77081ce8ff954b14122014cb533fb9dde7fbaf1b77b2f675a8fe287bf719ad57b5d22905b6afd76986410bd31da1cc876f3289e365f8725e81526c3692c576d249850ee56c547fb2ea8d4931f8dbd5f4510d2d21c35af7b011a1d98706d08857f581d6cf709c5051ad674f913816641d5233277c2ba7b02d2d27c693aa3c162d9','2017-06-06 20:46:32');
 
-/*!40000 ALTER TABLE `user_tokens` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DELIMITER ;;
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
+/*!50003 CREATE */ /*!50003 TRIGGER `default_expire_date` BEFORE INSERT ON `user_token` FOR EACH ROW set new.expires_at=DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY) */;;
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION" */;;
+/*!50003 CREATE */ /*!50003 TRIGGER `update_expire_date` BEFORE UPDATE ON `user_token` FOR EACH ROW set new.expires_at=DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 7 DAY) */;;
+DELIMITER ;
+/*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
 
-# table users
+# table user
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`users` (
+CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user` (
   `id` int(70) NOT NULL AUTO_INCREMENT,
   `email` varchar(150) NOT NULL DEFAULT '',
   `password` varchar(65) DEFAULT NULL,
@@ -44,15 +53,16 @@ CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`users` (
   UNIQUE KEY `user_email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `users` (`id`, `email`, `password`, `join_date`)
-VALUES (1,'jeremy@example.com','$2a$12$rMedzRDIicSJ7Sn/DKd6eOefAa2lHHsQrLoIEJIVSrsDljgZesGIO','2000-01-01 00:00:01');
+INSERT INTO `user` (`id`, `email`, `password`, `join_date`, `status`)
+VALUES
+	(1,'jeremy@example.com','$2a$12$6HK7GZXHhI27.sScLG4HzOhSvneo6xzHHYC//9RTrox0.yJbQ7SXK','2000-01-01 00:00:01','active'),
+	(2,'jb@example.com','$2a$12$59K9srxaF2hA6KJIbR6D9OstdLEiizw1Xvn6rIoY4lIC8cDK9ZmwK','2017-05-29 22:02:15',NULL);
 
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
-
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

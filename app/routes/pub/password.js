@@ -27,7 +27,7 @@ module.exports = function(router,connection,app) {
           app.errorLogger.error(meJSON.Message+err,info);
         } else {
           bcrypt.hash(pass, 12, function(err, hash) {
-            var table = ["users","password",hash,"email",req.body.email];
+            var table = ["user","password",hash,"email",req.body.email];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
               if(err) {

@@ -57,7 +57,7 @@ app.errorLogger = errorLogger;
 // securtiy takes tickets: check token in database, return user
 function findByToken(connection, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
-  var table = ["token","email","id","user_tokens","users","user_id_fk","token",token];
+  var table = ["token","email","id","user_token","user","user_id_fk","token",token];
   query = mysql.format(query,table);
   connection.query(query,function(err,rows){
     if(rows) {
