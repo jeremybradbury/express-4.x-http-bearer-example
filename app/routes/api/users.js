@@ -98,7 +98,7 @@ module.exports = function(router,connection,app) {
   router.route("/password-reset")
     .put((req, res, next) => { // Update User password by email Endpoint
       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-      var pass = app.newPass();
+      var pass = newPass();
       var email = sendPass(pass,req.body.email);
       gmail.sendMail(email, function(err,info){
         if(err) {
@@ -107,7 +107,7 @@ module.exports = function(router,connection,app) {
           app.errorLogger.error(meJSON.Message+ err, info);
         } else {
           bcrypt.hash(pass, 12, function(err, hash) {
-            var table = ["user","password",hash,"email",req.body.email];
+            var table = ["user","password",hash,"user_id",req.user.user_id];
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
               if(err) {
