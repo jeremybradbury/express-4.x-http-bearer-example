@@ -54,9 +54,6 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
-// invite people: generate strong passwords
-app.newPass = newPass = require("./app/lib/xpg");
-//console.log(newPass());
 // securtiy takes tickets: check token in database, return user
 function findByToken(connection, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
@@ -106,7 +103,7 @@ REST.prototype.configureExpress = function(connection) {
   // /pass/* no token required, but user & password are required
   var routePass = express.Router(); // create Password Auth router
   var pass = require("./app/routes/pass"); // pass routes are defined here
-  app.use("/pass", routePass); // no token, email & password required (must implement app.userPassAuth() on each endpoint see token.js)
+  app.use("/pass", routePass); // no token, email & password required (must implement userAuth() module on each endpoint see token.js)
   var pass_router = new pass(routePass,connection,app); // create password-reset.js route module 
   
   // /pub/* public no token or password required

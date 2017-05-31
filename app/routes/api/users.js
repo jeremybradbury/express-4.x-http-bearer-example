@@ -1,7 +1,7 @@
 const mailer = require('nodemailer');
 var mysql = require("mysql");
 var crypto = require('crypto'), bcrypt = require('bcryptjs');
-var genToken = require("../../lib/token-gen");
+var genToken = require("../../lib/token-gen"), newPass = require("../../lib/xpg");
 var gmail = mailer.createTransport({
   service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
   auth: require('../../config/email.json')
@@ -36,7 +36,7 @@ module.exports = function(router,connection,app) {
     })
     .post((req, res, next) => { // Create new User
       var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-      var pass = app.newPass();
+      var pass = newPass();
       var email = sendPass(pass,req.body.email);
       gmail.sendMail(email, function(err,info){
         if(err) {
