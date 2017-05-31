@@ -1,5 +1,5 @@
 var express = require("express");
-var mysql = require("mysql");
+var mysql = require("mysql"), crypto = require('crypto');
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
@@ -54,7 +54,7 @@ module.exports.stream = {
   }
 };
 app.errorLogger = errorLogger;
-// securtiy checks the guestlist: check token in database, return user
+// securtiy takes tickets: check token in database, return user
 function findByToken(connection, app, token, cb) {
   var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
   var table = ["token","email","id","user_tokens","users","user_id_fk","token",token];
@@ -100,42 +100,35 @@ REST.prototype.configureExpress = function(connection) {
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
   var api_router = new api(routeApi,connection,app); // create api.js route module
   
-   // /password-reset/ no token or password required, only requires email. generate, then email new password
-  var routePwr = express.Router(); // create Password Reset router
-  app.use("/password-reset", routePwr); // no token or password required, just email
-  var pwr_router = require("./app/routes/password-reset")(routePwr,connection,app); // create password-reset.js route module 
+  // /pass/* no token required, but user & password are required
+  var routePass = express.Router(); // create Password Auth router
+  var pass = require("./app/routes/pass"); // pass routes are defined here
+  app.use("/pass", routePass); // no token, email & password required (must implement userAuth() module on each endpoint see token.js)
+  var pass_router = new pass(routePass,connection,app); // create password-reset.js route module 
+  
+  // /pub/* public no token or password required
+  var routePub = express.Router(); // create Password Reset router
+  var pub = require("./app/routes/pub"); // api routes are defined here
+  app.use("/pub", routePub); // no token or password required, just email
+  var pub_router = new pub(routePub,connection,app); // create password-reset.js route module 
   
   // /docs/* routes for the Documentation (no Auth required) 
-  	// [TODO] I should probably add Auth here, but expose an endpoint for token/user creation docs.
+  	// TODO: I should probably add Auth here, but expose an endpoint for token/user creation docs.
+  	// TODO: I should actually make 3 versions of docs in each of the 3 areas
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
   app.use("/docs", routeDocs); // no Auth added for these routes
   var docs_router = new docs(routeDocs,connection,app); // create docs.js route module
-  
-  /* begin removable comments: to add more route subfolders here using instructions below */
-    // FIRST: copy and rename /app/routes/docs.js to /app/routes/mypath.js
-    // SECOND: find and replace "docs"/"Docs" with "mypath"/"Mypath" in mypath.js like we did below
-    // THIRD: copy & uncomment the 4 example route lines below 
-    // FOURTH: IK you won't actualy use "mypath" so replace that with in the uncommented copy of the example routes you just made 
-    // FIFTH(FIRST): this is forked/versioned right? delete these comments (you may only wish to add/edit routes in api.js & docs.js)
-    //* begin example routes *//
-      // var routeMypath = express.Router(); // create Mypath router
-      // var mypath = require("./app/routes/mypath"); // mypath routes are defined here
-      // app.use("/mypath", Auth, routeMypath); // use Auth bearer middleware for these routes (optional)
-      // var mypath_router = new docs(routeMypath,connection,app);// create mypath.js route module
-    //* end example routes *//
-  /* end removable comments */
       
   // ## end routes ## //
   // guard the doors
-  passport.use(new Strategy(
-    (token, cb) => {
-     findByToken(connection, app, token, (err, user) => {
-       if (err) { return cb(err); }
-       if (!user) { return cb(null, false); }
-       return cb(null, user);
-     });
-    }));
+  passport.use(new Strategy((token, cb) => {
+    findByToken(connection, app, token, (err, user) => {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
   self.startServer();
 }
 // close the blinds: secure with https
