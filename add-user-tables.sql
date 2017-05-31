@@ -7,13 +7,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 # schema
-CREATE SCHEMA IF NOT EXISTS `restful_api_demo` DEFAULT CHARACTER SET latin1 ;
-USE `restful_api_demo` ;
+CREATE SCHEMA IF NOT EXISTS `restful_api` DEFAULT CHARACTER SET latin1 ;
+USE `restful_api` ;
 
 # table user_token
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user_token` (
+CREATE TABLE IF NOT EXISTS  `restful_api`.`user_token` (
   `token_id` int(70) NOT NULL AUTO_INCREMENT,
   `user_id_fk` int(70) NOT NULL,
   `token` varchar(600) DEFAULT NULL,
@@ -44,7 +44,7 @@ DELIMITER ;
 # table user
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS  `restful_api_demo`.`user` (
+CREATE TABLE IF NOT EXISTS  `restful_api`.`user` (
   `id` int(70) NOT NULL AUTO_INCREMENT,
   `email` varchar(150) NOT NULL DEFAULT '',
   `password` varchar(65) DEFAULT NULL,
