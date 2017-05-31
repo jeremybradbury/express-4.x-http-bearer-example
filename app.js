@@ -56,15 +56,17 @@ module.exports.stream = {
 app.errorLogger = errorLogger;
 // securtiy takes tickets: check token in database, return user
 function findByToken(connection, app, token, cb) {
-  var query = "SELECT ??, ??, ?? FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
-  var table = ["token","email","id","user_token","user","user_id_fk","token",token];
+  var query = "SELECT * FROM ?? LEFT JOIN ?? ON (??) WHERE ?? = ?;";
+  var table = ["user_token","user","user_id_fk","token",token];
   query = mysql.format(query,table);
   connection.query(query,function(err,rows){
     if(rows) {
       process.nextTick(function() {
         for (var i = 0, len = rows.length; i < len; i++) {
           var row = rows[i];
-          if (row.token === token) {
+          var expire = new Date(row.expires), nowish = new Date();
+          var valid = (expire.getTime() >= nowish.getTime());
+          if (row.token === token && valid) {
             return cb(null, row);
           }
         }

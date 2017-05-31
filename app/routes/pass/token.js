@@ -28,10 +28,10 @@ module.exports = function(router,connection,app) {
             // Upsert
             if(user.token != null){ // Update 
               var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-              var table = ["user_token","token",token,"user_id_fk",user.id];
+              var table = ["user_token","token",token,"token_id",user.token_id];
             } else { // Create
               var query = "INSERT INTO ??(??,??) VALUES (?,?)";
-              var table = ["user_token","token","user_id_fk",token,user.id];
+              var table = ["user_token","token","user_id_fk",token,user.user_id];
             }
             query = mysql.format(query,table);
             connection.query(query,function(err,rows){
