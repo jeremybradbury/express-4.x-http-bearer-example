@@ -114,31 +114,16 @@ REST.prototype.configureExpress = function(connection) {
   var docs = require("./app/routes/docs"); // docs routes are defined here
   app.use("/docs", routeDocs); // no Auth added for these routes
   var docs_router = new docs(routeDocs,connection,app); // create docs.js route module
-  
-  /* begin removable comments: to add more route subfolders here using instructions below */
-    // FIRST: copy and rename /app/routes/docs.js to /app/routes/mypath.js
-    // SECOND: find and replace "docs"/"Docs" with "mypath"/"Mypath" in mypath.js like we did below
-    // THIRD: copy & uncomment the 4 example route lines below 
-    // FOURTH: IK you won't actualy use "mypath" so replace that with in the uncommented copy of the example routes you just made 
-    // FIFTH(FIRST): this is forked/versioned right? delete these comments (you may only wish to add/edit routes in api.js & docs.js)
-    //* begin example routes *//
-      // var routeMypath = express.Router(); // create Mypath router
-      // var mypath = require("./app/routes/mypath"); // mypath routes are defined here
-      // app.use("/mypath", Auth, routeMypath); // use Auth bearer middleware for these routes (optional)
-      // var mypath_router = new docs(routeMypath,connection,app);// create mypath.js route module
-    //* end example routes *//
-  /* end removable comments */
       
   // ## end routes ## //
   // guard the doors
-  passport.use(new Strategy(
-    (token, cb) => {
-     findByToken(connection, app, token, (err, user) => {
-       if (err) { return cb(err); }
-       if (!user) { return cb(null, false); }
-       return cb(null, user);
-     });
-    }));
+  passport.use(new Strategy((token, cb) => {
+    findByToken(connection, app, token, (err, user) => {
+      if (err) { return cb(err); }
+      if (!user) { return cb(null, false); }
+      return cb(null, user);
+    });
+  }));
   self.startServer();
 }
 // close the blinds: secure with https
