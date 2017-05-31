@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS  `restful_api`.`user_token` (
 LOCK TABLES `user_token` WRITE;
 /*!40000 ALTER TABLE `user_token` DISABLE KEYS */;
 
-INSERT INTO `user_token` (`id`, `user_id_fk`, `token`, `expires_at`)
+INSERT INTO `user_token` (`token_id`, `user_id_fk`, `token`, `expires_at`)
 VALUES
 	(1,1,'6d9e2fb41e0b27ef5708b5f83184f514366317ec317c8c867fafa8930eb4d6c11974789d2ae3bf5151232fd1c736a4fc965089d8621d4874b8a734550e4ad9a03488d49ee37f4037f7ccf39d00ee8ef5c52524bedb6b6b5060d73bc39baaba34de6842d0c34b4e6ca737d89034179637f04f2047c5a227b764ecf5c53ecaa86c2ec8b039e94c8e325de9e764658724b648161e93e09c679dc15e51ffa922da907d7f21f6ae8f2c16b9f084fc8a84f48eb90953960b646232d4d7b7268018191658a8039f9e475c8ce7364aff5e9c472461ba72362a660ab6ea3938aa6f7d9896329685879e983734ea935dd0bb268566de76a9d2392e4fbacff4026b79dc07e89eae8a4342f1','2017-06-06 20:46:30'),
 	(2,2,'295ba2925a7015ff5726ca57e5560c0bac85c77081ce8ff954b14122014cb533fb9dde7fbaf1b77b2f675a8fe287bf719ad57b5d22905b6afd76986410bd31da1cc876f3289e365f8725e81526c3692c576d249850ee56c547fb2ea8d4931f8dbd5f4510d2d21c35af7b011a1d98706d08857f581d6cf709c5051ad674f913816641d5233277c2ba7b02d2d27c693aa3c162d9','2017-06-06 20:46:32');
@@ -45,7 +45,7 @@ DELIMITER ;
 # ------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS  `restful_api`.`user` (
-  `id` int(70) NOT NULL AUTO_INCREMENT,
+  `user_id` int(70) NOT NULL AUTO_INCREMENT,
   `email` varchar(150) NOT NULL DEFAULT '',
   `password` varchar(65) DEFAULT NULL,
   `join_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS  `restful_api`.`user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`id`, `email`, `password`, `join_date`, `status`)
+INSERT INTO `user` (`user_id`, `email`, `password`, `join_date`, `status`)
 VALUES
 	(1,'jeremy@example.com','$2a$12$6HK7GZXHhI27.sScLG4HzOhSvneo6xzHHYC//9RTrox0.yJbQ7SXK','2000-01-01 00:00:01','active'),
 	(2,'jb@example.com','$2a$12$59K9srxaF2hA6KJIbR6D9OstdLEiizw1Xvn6rIoY4lIC8cDK9ZmwK','2017-05-29 22:02:15',NULL);

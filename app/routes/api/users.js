@@ -20,7 +20,7 @@ module.exports = function(router,connection,app) {
   router.route("/users")
     .get((req, res, next) => { // Index Users (no limit set... yet)
       var query = "SELECT ??, ?? FROM ??";
-      var table = ["id","email","user"];
+      var table = ["user_id","email","user"];
       query = mysql.format(query,table);
       connection.query(query,function(err,rows){
         if(err) {
