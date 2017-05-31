@@ -1,9 +1,8 @@
 const mailer = require('nodemailer');
 var mysql = require("mysql");
-var bcrypt = require('bcryptjs');
 var gmail = mailer.createTransport({
   service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
-  auth: require('../config/email.json')
+  auth: require('../../config/email.json')
 });
 function sendPass(pass,email) {
   return {
@@ -15,7 +14,7 @@ function sendPass(pass,email) {
   };
 }
 module.exports = function(router,connection,app) {
-  router.route("/")
+  router.route("/password")
     .put((req, res, next) => { // Password reset by email Endpoint
       var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
       var pass = app.newPass();

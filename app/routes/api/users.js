@@ -1,6 +1,7 @@
 const mailer = require('nodemailer');
 var mysql = require("mysql");
-var bcrypt = require('bcryptjs');
+var crypto = require('crypto'), bcrypt = require('bcryptjs');
+var genToken = require("../../lib/token-gen");
 var gmail = mailer.createTransport({
   service: 'gmail', // for gmail, use an application password: https://myaccount.google.com/apppasswords
   auth: require('../../config/email.json')
@@ -14,9 +15,6 @@ function sendPass(pass,email) {
     html: 'Your password is:<br><b>'+pass+'</b>' // html body
   };
 }
-
-// TODO: POST `/api/request-token` endpoint required: email/password
-
 module.exports = function(router,connection,app) {
   // api routes
   router.route("/users")
@@ -126,5 +124,23 @@ module.exports = function(router,connection,app) {
         }
       });     
     }); 
+  router.route("/user/token")
+    .put((req, res, next) => { // Update auth token with current auth token
+      var token = genToken();
+      var query = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
+      var table = ["user_tokens","token",token,"token",req.user.token];
+      query = mysql.format(query,table);
+      connection.query(query,function(err,rows){
+        if(err) {
+          var meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+          res.json(meJSON);
+          app.errorLogger.error(meJSON.Message+err);
+        } else {
+          var meJSON = {"Error" : false, "Message" : "This is your new token. Save it now! It will be needed for all future requests!","Token":token};
+          res.json(meJSON);
+          app.errorLogger.info(meJSON.Message);
+        } 
+      })
+    });    
   return this;
 }

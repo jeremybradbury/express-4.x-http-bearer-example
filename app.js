@@ -1,5 +1,5 @@
 var express = require("express");
-var mysql = require("mysql");
+var mysql = require("mysql"), crypto = require('crypto');
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
@@ -103,13 +103,21 @@ REST.prototype.configureExpress = function(connection) {
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
   var api_router = new api(routeApi,connection,app); // create api.js route module
   
-   // /password-reset/ no token or password required, only requires email. generate, then email new password
-  var routePwr = express.Router(); // create Password Reset router
-  app.use("/password-reset", routePwr); // no token or password required, just email
-  var pwr_router = require("./app/routes/password-reset")(routePwr,connection,app); // create password-reset.js route module 
+  // /pass/* no token required, but user & password are required
+  var routePass = express.Router(); // create Password Auth router
+  var pass = require("./app/routes/pass"); // pass routes are defined here
+  app.use("/pass", routePass); // no token, email & password required (must implement app.userPassAuth() on each endpoint see token.js)
+  var pass_router = new pass(routePass,connection,app); // create password-reset.js route module 
+  
+  // /pub/* public no token or password required
+  var routePub = express.Router(); // create Password Reset router
+  var pub = require("./app/routes/pub"); // api routes are defined here
+  app.use("/pub", routePub); // no token or password required, just email
+  var pub_router = new pub(routePub,connection,app); // create password-reset.js route module 
   
   // /docs/* routes for the Documentation (no Auth required) 
-  	// [TODO] I should probably add Auth here, but expose an endpoint for token/user creation docs.
+  	// TODO: I should probably add Auth here, but expose an endpoint for token/user creation docs.
+  	// TODO: I should actually make 3 versions of docs in each of the 3 areas
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
   app.use("/docs", routeDocs); // no Auth added for these routes
