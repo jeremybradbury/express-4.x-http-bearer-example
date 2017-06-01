@@ -6,7 +6,6 @@ module.exports = function(router,connection,app) {
       var cache = require("../../cache/amc.json");
       var table = "api_"+req.params[0];
       if (table in cache) {
-        // var columns = cache[table];
         var query = "SELECT * FROM ??";
         table = [table];
         query = mysql.format(query,table);
@@ -79,9 +78,9 @@ module.exports = function(router,connection,app) {
       var cache = require("../../cache/amc.json");
       var obj = "api_"+req.params[0];
       if (obj in cache) {
-        var columns = cache[obj];
+        var id = req.params[0]+"_id";
         var query = "SELECT * FROM ?? WHERE ??=?";
-        var table = [obj,columns[0],req.params.id];
+        var table = [obj,id,req.params.id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
           if(err) {
@@ -107,8 +106,7 @@ module.exports = function(router,connection,app) {
       if (obj in cache) {
         var query = "UPDATE ?? ";
         var table = [obj];
-        var columns = cache[obj];
-        var id = columns[0];
+        var id = req.params[0]+"_id";
         if(Object.keys(req.body).length > 0){
           query += "SET ??=?";
           var key = Object.keys(req.body)[0];
@@ -150,9 +148,9 @@ module.exports = function(router,connection,app) {
       var cache = require("../../cache/amc.json");
       var obj = "api_"+req.params[0];
       if (obj in cache) {
-        var columns = cache[obj];
+        var id = req.params[0]+"_id";
         var query = "DELETE FROM ?? WHERE ??=?";
-        var table = [obj,columns[0],req.params.id];
+        var table = [obj,id,req.params.id];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
           if(err) {
