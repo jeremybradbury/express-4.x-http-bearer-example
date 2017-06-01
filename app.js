@@ -1,5 +1,5 @@
 var express = require("express");
-var mysql = require("mysql"), crypto = require('crypto');
+var mysql = require("mysql"), crypto = require('crypto'), autoModelCache = require("./app/lib/amc");
 var fs = require("fs"), path = require("path"), bodyParser = require("body-parser");
 var passport = require("passport"), Strategy = require("passport-http-bearer").Strategy, https = require("https");
 var rfs = require("rotating-file-stream"), accessLogger = require("morgan"), winston = require("winston");
@@ -131,7 +131,10 @@ REST.prototype.configureExpress = function(connection) {
       return cb(null, user);
     });
   }));
+  var cacheDirectory = path.join(__dirname, "app/cache");
+  fs.existsSync(cacheDirectory) || fs.mkdirSync(cacheDirectory); // ensure cache directory exists
   self.startServer();
+  autoModelCache(connection,cacheDirectory,function(){console.log('tables cached')});
 }
 // close the blinds: secure with https
 REST.prototype.startServer = function() {

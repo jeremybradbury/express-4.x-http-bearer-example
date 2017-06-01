@@ -31,6 +31,8 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,app) => {
       };
       res.json({ Error: false, Message: msg });
     });
+  // Auto Model routes. Remove or comment to disable and/or Override auto routing with specific models like for Users
+   var autoRoutes = require("./api/auto")(router,connection,app); // auto routes for tables prefixed with `api_`  
   // User routes
   var userRoutes = require("./api/users")(router,connection,app); // duplicate & modify this line and `app/routes/api/user.js` for more API tables/objects
   
