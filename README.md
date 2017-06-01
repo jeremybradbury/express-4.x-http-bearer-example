@@ -14,7 +14,7 @@ Password reset endpoints: Generate new password and email to user
 
 Token generation endpoints: Upsert then return new token & set expiry to 7 days from now
 * PUT /api/user/token (required: token as Auth header)
-* PUT /pass/token (required: email, password as post body params)
+* PUT /user/token (required: email, password as post body params)
 
 Thanks so much to these projects among many others (check [package.json](package.json) for more)
 * Forked: [Express 4.x http bearer example](https://github.com/passport/express-4.x-http-bearer-example)

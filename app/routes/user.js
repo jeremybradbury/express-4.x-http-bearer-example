@@ -30,6 +30,6 @@ REST_ROUTER.prototype.handleRoutes = (router,connection,app) => {
     res.json({ Error: false, Message: msg });
     });
   // Token routes
-  var tokenRoutes = require("./pass/token")(router,connection,app);
+  var tokenRoutes = require("./user/token")(router,connection,app);
 }
 module.exports = REST_ROUTER;

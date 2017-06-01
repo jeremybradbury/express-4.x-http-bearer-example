@@ -102,11 +102,11 @@ REST.prototype.configureExpress = function(connection) {
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
   var api_router = new api(routeApi,connection,app); // create api.js route module
   
-  // /pass/* no token required, but user & password are required
-  var routePass = express.Router(); // create Password Auth router
-  var pass = require("./app/routes/pass"); // pass routes are defined here
-  app.use("/pass", routePass); // no token, email & password required (must implement userAuth() module on each endpoint see token.js)
-  var pass_router = new pass(routePass,connection,app); // create password-reset.js route module 
+  // /user/* no token required, but user & password are required
+  var routeUser = express.Router(); // create Password Auth router
+  var pass = require("./app/routes/user"); // pass routes are defined here
+  app.use("/user", routeUser); // no token, email & password required (must implement userAuth() module on each endpoint see token.js)
+  var pass_router = new pass(routeUser,connection,app); // create password-reset.js route module 
   
   // /pub/* public no token or password required
   var routePub = express.Router(); // create Password Reset router
