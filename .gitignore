@@ -7,5 +7,6 @@ npm-debug.log
 
 # App
 app/log/
+app/cache/
 app/config/database.json
 app/config/email.json
