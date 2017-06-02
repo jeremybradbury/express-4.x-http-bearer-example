@@ -94,35 +94,36 @@ REST.prototype.configureExpress = function(connection) {
   app.use(bodyParser.json()); // bodyParser() will let us get the data from a POST
   Auth = passport.authenticate("bearer", { session: false }); // define Auth as Passport Berer module
   app.baseUrl = "https://localhost:3443"; // global mostly for documentation
-  // ## begin routes ## //
-  
+
+// ## begin route groups ## //
   // /api/* routes for the secure API 
   var routeApi = express.Router(); // create API router
   var api = require("./app/routes/api"); // api routes are defined here
   app.use("/api", Auth, routeApi); // use Auth bearer middleware for these routes
   var api_router = new api(routeApi,connection,app); // create api.js route module
-  
-  // /user/* no token required, but user & password are required
-  var routeUser = express.Router(); // create Password Auth router
-  var pass = require("./app/routes/user"); // pass routes are defined here
-  app.use("/user", routeUser); // no token, email & password required (must implement userAuth() module on each endpoint see token.js)
-  var pass_router = new pass(routeUser,connection,app); // create password-reset.js route module 
-  
-  // /pub/* public no token or password required
-  var routePub = express.Router(); // create Password Reset router
-  var pub = require("./app/routes/pub"); // api routes are defined here
-  app.use("/pub", routePub); // no token or password required, just email
-  var pub_router = new pub(routePub,connection,app); // create password-reset.js route module 
-  
-  // /docs/* routes for the Documentation (Auth required) 
-  	// TODO: I should expose an endpoint for token/user creation docs.
-  	// TODO: I should actually make 3 versions of docs in each of the 3 areas
+
+  // /docs/* routes for api Documentation (Auth required)
+    // TODO: add docs to pub & user
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
-  app.use("/docs", Auth, routeDocs); // no Auth added for these routes
-  var docs_router = new docs(routeDocs,connection,app); // create docs.js route module
-      
-  // ## end routes ## //
+  app.use("/docs", Auth, routeDocs); // use Auth bearer middleware for these routes
+  var docs_router = new docs(routeDocs,connection,app); // create docs.js route module  
+
+  // /user/* no token required, but user & password are required
+    // TODO: add docs to pub & user
+  var routeUser = express.Router(); // create userAuth router
+  var user = require("./app/routes/user"); // userAuth routes are defined here
+  app.use("/user", routeUser); // no token required, email & password required (must implement userAuth() module on each endpoint see token.js)
+  var user_router = new pass(routeUser,connection,app); // create user.js route module   
+
+  // /pub/* public no token or password required
+    // TODO: add docs to pub & user
+  var routePub = express.Router(); // create Public router
+  var pub = require("./app/routes/pub"); // public routes are defined here
+  app.use("/pub", routePub); // no token or password required
+  var pub_router = new pub(routePub,connection,app); // create pub.js route module       
+// ## end route groups ## //
+
   // guard the doors
   passport.use(new Strategy((token, cb) => {
     findByToken(connection, app, token, (err, user) => {
