@@ -15,8 +15,8 @@ module.exports = function(router,connection,app) {
             res.json(meJSON);
             app.errorLogger.error(meJSON.Message+err);
           } else {
-            meJSON = {"Error" : false, "Message" : "Success"}
-            meJSON[req.params[0]+"s"] = rows;
+            meJSON = {"Error" : false, "Message" : {}}
+            meJSON.Message[req.params[0]+"s"] = rows;
             res.json(meJSON);
             app.errorLogger.info(meJSON.Message,rows);
           }
@@ -56,8 +56,8 @@ module.exports = function(router,connection,app) {
               res.json(meJSON);
               app.errorLogger.error(meJSON.Message+err);
             } else {
-              meJSON = {"Error" : false, "Message" : "Success"}
-              meJSON[req.params[0]] = rows;
+              meJSON = {"Error" : false, "Message" : {}}
+              meJSON.Message[req.params[0]] = rows;
               res.json(meJSON);
               app.errorLogger.info(meJSON.Message,rows);
             }
@@ -88,8 +88,8 @@ module.exports = function(router,connection,app) {
             res.json(meJSON);
             app.errorLogger.error(meJSON.Message+err);
           } else {
-            meJSON = {"Error" : false, "Message" : "Success"}
-            meJSON[req.params[0]] = rows;
+            meJSON = {"Error" : false, "Message" : {}}
+            meJSON.Message[req.params[0]] = rows;
             res.json(meJSON);
             app.errorLogger.info(meJSON.Message,rows);
           }
@@ -127,8 +127,8 @@ module.exports = function(router,connection,app) {
               res.json(meJSON);
               app.errorLogger.error(meJSON.Message+err);
             } else {
-              meJSON = {"Error" : false, "Message" : "Success"}
-              meJSON[req.params[0]] = rows;
+              meJSON = {"Error" : false, "Message" : {}}
+              meJSON.Message[req.params[0]] = rows;
               res.json(meJSON);
               app.errorLogger.info(meJSON.Message,rows);
             }
@@ -158,8 +158,8 @@ module.exports = function(router,connection,app) {
             res.json(meJSON);
             app.errorLogger.error(meJSON.Message+err);
           } else {
-            meJSON = {"Error" : false, "Message" : "Success"}
-            meJSON[req.params[0]] = rows;
+            meJSON = {"Error" : false, "Message" : {}}
+            meJSON.Message[req.params[0]] = rows;
             res.json(meJSON);
             app.errorLogger.info(meJSON.Message,rows);
           }
