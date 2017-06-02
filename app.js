@@ -114,7 +114,7 @@ REST.prototype.configureExpress = function(connection) {
   var routeUser = express.Router(); // create userAuth router
   var user = require("./app/routes/user"); // userAuth routes are defined here
   app.use("/user", routeUser); // no token required, email & password required (must implement userAuth() module on each endpoint see token.js)
-  var user_router = new pass(routeUser,connection,app); // create user.js route module   
+  var user_router = new user(routeUser,connection,app); // create user.js route module   
 
   // /pub/* public no token or password required
     // TODO: add docs to pub & user
