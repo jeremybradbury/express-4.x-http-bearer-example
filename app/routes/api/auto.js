@@ -18,7 +18,7 @@ module.exports = function(router,connection,app) {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
             res.json(meJSON);
-            app.errorLogger.info(meJSON.Message,rows);
+            app.errorLogger.info(rows);
           }
         }); 
       } else {
@@ -59,7 +59,7 @@ module.exports = function(router,connection,app) {
               meJSON = {"Error" : false, "Message" : {}}
               meJSON.Message[req.params[0]] = rows;
               res.json(meJSON);
-              app.errorLogger.info(meJSON.Message,rows);
+              app.errorLogger.info(rows);
             }
           }); 
         } else {
@@ -91,7 +91,7 @@ module.exports = function(router,connection,app) {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]] = rows;
             res.json(meJSON);
-            app.errorLogger.info(meJSON.Message,rows);
+            app.errorLogger.info(rows);
           }
         }); 
       } else {
@@ -130,7 +130,7 @@ module.exports = function(router,connection,app) {
               meJSON = {"Error" : false, "Message" : {}}
               meJSON.Message[req.params[0]] = rows;
               res.json(meJSON);
-              app.errorLogger.info(meJSON.Message,rows);
+              app.errorLogger.info(rows);
             }
           }); 
         } else {
