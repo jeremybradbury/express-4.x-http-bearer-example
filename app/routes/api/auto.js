@@ -13,7 +13,7 @@ module.exports = function(router,connection,app) {
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message+err);
+            app.errorLogger.error(meJSON.Message,err);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
@@ -54,7 +54,7 @@ module.exports = function(router,connection,app) {
             if(err) {
               meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message+err);
+              app.errorLogger.error(meJSON.Message,err);
             } else {
               meJSON = {"Error" : false, "Message" : {}}
               meJSON.Message[req.params[0]] = rows;
@@ -86,7 +86,7 @@ module.exports = function(router,connection,app) {
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message+err);
+            app.errorLogger.error(meJSON.Message,err);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]] = rows;
@@ -125,7 +125,7 @@ module.exports = function(router,connection,app) {
             if(err) {
               meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message+err);
+              app.errorLogger.error(meJSON.Message,err);
             } else {
               meJSON = {"Error" : false, "Message" : {}}
               meJSON.Message[req.params[0]] = rows;
@@ -156,7 +156,7 @@ module.exports = function(router,connection,app) {
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message+err);
+            app.errorLogger.error(meJSON.Message,err);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]] = rows;
