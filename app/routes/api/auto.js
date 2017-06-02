@@ -18,7 +18,7 @@ module.exports = function(router,connection,app) {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
             res.json(meJSON);
-            app.errorLogger.info(rows);
+            app.errorLogger.info("Index "+req.params[0]+"s");
           }
         }); 
       } else {
@@ -57,9 +57,9 @@ module.exports = function(router,connection,app) {
               app.errorLogger.error(meJSON.Message,err);
             } else {
               meJSON = {"Error" : false, "Message" : {}}
-              meJSON.Message[req.params[0]] = rows;
+              meJSON.Message[req.params[0]+"s"] = rows;
               res.json(meJSON);
-              app.errorLogger.info(rows);
+              app.errorLogger.info("Create new "+req.params[0]);
             }
           }); 
         } else {
@@ -89,9 +89,9 @@ module.exports = function(router,connection,app) {
             app.errorLogger.error(meJSON.Message,err);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
-            meJSON.Message[req.params[0]] = rows;
+            meJSON.Message[req.params[0]+"s"] = rows;
             res.json(meJSON);
-            app.errorLogger.info(rows);
+            app.errorLogger.info("Read",rows);
           }
         }); 
       } else {
@@ -128,9 +128,9 @@ module.exports = function(router,connection,app) {
               app.errorLogger.error(meJSON.Message,err);
             } else {
               meJSON = {"Error" : false, "Message" : {}}
-              meJSON.Message[req.params[0]] = rows;
+              meJSON.Message[req.params[0]+"s"] = rows;
               res.json(meJSON);
-              app.errorLogger.info(rows);
+              app.errorLogger.info("Update",rows);
             }
           }); 
         } else {
@@ -159,9 +159,9 @@ module.exports = function(router,connection,app) {
             app.errorLogger.error(meJSON.Message,err);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
-            meJSON.Message[req.params[0]] = rows;
+            meJSON.Message[req.params[0]+"s"] = rows;
             res.json(meJSON);
-            app.errorLogger.info(meJSON.Message,rows);
+            app.errorLogger.info("Delete",rows);
           }
         }); 
       } else {
