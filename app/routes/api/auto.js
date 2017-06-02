@@ -13,7 +13,7 @@ module.exports = function(router,connection,app) {
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message,err);
+            app.errorLogger.error(meJSON.Message);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
@@ -50,14 +50,13 @@ module.exports = function(router,connection,app) {
           query += ") values "+values+");";
           query = mysql.format(query,table);
           console.log(query);
-          connection.query(query,function(err,rows){
+          connection.query(query,function(err,result){
             if(err) {
-              meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+              meJSON = {"Error" : true, "Message" : err.stack};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message,err);
+              app.errorLogger.error(meJSON.Message);
             } else {
-              meJSON = {"Error" : false, "Message" : {}}
-              meJSON.Message[req.params[0]+"s"] = rows;
+              meJSON = {"Error" : false, "Message" : result}
               res.json(meJSON);
               app.errorLogger.info("Create new "+req.params[0]);
             }
@@ -84,9 +83,9 @@ module.exports = function(router,connection,app) {
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
           if(err) {
-            meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+            meJSON = {"Error" : true, "Message" : err.stack};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message,err);
+            app.errorLogger.error(meJSON.Message);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
@@ -121,16 +120,15 @@ module.exports = function(router,connection,app) {
           query += " WHERE ??=?;";
           table = table.concat([id,req.params.id]);
           query = mysql.format(query,table);
-          connection.query(query,function(err,rows){
+          connection.query(query,function(err,result){
             if(err) {
-              meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+              meJSON = {"Error" : true, "Message" : err.stack};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message,err);
+              app.errorLogger.error(meJSON.Message);
             } else {
-              meJSON = {"Error" : false, "Message" : {}}
-              meJSON.Message[req.params[0]+"s"] = rows;
+              meJSON = {"Error" : false, "Message" : result}
               res.json(meJSON);
-              app.errorLogger.info("Update",rows);
+              app.errorLogger.info("Update",result);
             }
           }); 
         } else {
@@ -152,16 +150,15 @@ module.exports = function(router,connection,app) {
         var query = "DELETE FROM ?? WHERE ??=?";
         var table = [obj,id,req.params.id];
         query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
+        connection.query(query,function(err,result){
           if(err) {
-            meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+            meJSON = {"Error" : true, "Message" : err.stack};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message,err);
+            app.errorLogger.error(meJSON.Message);
           } else {
-            meJSON = {"Error" : false, "Message" : {}}
-            meJSON.Message[req.params[0]+"s"] = rows;
+            meJSON = {"Error" : false, "Message" : result}
             res.json(meJSON);
-            app.errorLogger.info("Delete",rows);
+            app.errorLogger.info("Delete",result);
           }
         }); 
       } else {
