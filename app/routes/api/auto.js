@@ -11,7 +11,7 @@ module.exports = function(router,connection,app) {
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
           if(err) {
-            meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
+            meJSON = {"Error" : true, "Message" : err.stack.split('at')[0]};
             res.json(meJSON);
             app.errorLogger.error(err.stack);
           } else {
