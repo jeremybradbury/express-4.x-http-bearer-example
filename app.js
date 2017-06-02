@@ -114,12 +114,12 @@ REST.prototype.configureExpress = function(connection) {
   app.use("/pub", routePub); // no token or password required, just email
   var pub_router = new pub(routePub,connection,app); // create password-reset.js route module 
   
-  // /docs/* routes for the Documentation (no Auth required) 
-  	// TODO: I should probably add Auth here, but expose an endpoint for token/user creation docs.
+  // /docs/* routes for the Documentation (Auth required) 
+  	// TODO: I should expose an endpoint for token/user creation docs.
   	// TODO: I should actually make 3 versions of docs in each of the 3 areas
   var routeDocs = express.Router(); // create Docs router
   var docs = require("./app/routes/docs"); // docs routes are defined here
-  app.use("/docs", routeDocs); // no Auth added for these routes
+  app.use("/docs", Auth, routeDocs); // no Auth added for these routes
   var docs_router = new docs(routeDocs,connection,app); // create docs.js route module
       
   // ## end routes ## //
