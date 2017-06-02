@@ -13,7 +13,7 @@ module.exports = function(router,connection,app) {
           if(err) {
             meJSON = {"Error" : true, "Message" : "Error executing MySQL query. "};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message);
+            app.errorLogger.error(err.stack);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
@@ -52,9 +52,9 @@ module.exports = function(router,connection,app) {
           console.log(query);
           connection.query(query,function(err,result){
             if(err) {
-              meJSON = {"Error" : true, "Message" : err.stack};
+              meJSON = {"Error" : true, "Message" : err.stack.split('at')[0]};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message);
+              app.errorLogger.error(err.stack);
             } else {
               meJSON = {"Error" : false, "Message" : result}
               res.json(meJSON);
@@ -83,9 +83,9 @@ module.exports = function(router,connection,app) {
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
           if(err) {
-            meJSON = {"Error" : true, "Message" : err.stack};
+            meJSON = {"Error" : true, "Message" : err.stack.split('at')[0]};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message);
+            app.errorLogger.error(err.stack);
           } else {
             meJSON = {"Error" : false, "Message" : {}}
             meJSON.Message[req.params[0]+"s"] = rows;
@@ -122,9 +122,9 @@ module.exports = function(router,connection,app) {
           query = mysql.format(query,table);
           connection.query(query,function(err,result){
             if(err) {
-              meJSON = {"Error" : true, "Message" : err.stack};
+              meJSON = {"Error" : true, "Message" : err.stack.split('at')[0]};
               res.json(meJSON);
-              app.errorLogger.error(meJSON.Message);
+              app.errorLogger.error(err.stack);
             } else {
               meJSON = {"Error" : false, "Message" : result}
               res.json(meJSON);
@@ -152,9 +152,9 @@ module.exports = function(router,connection,app) {
         query = mysql.format(query,table);
         connection.query(query,function(err,result){
           if(err) {
-            meJSON = {"Error" : true, "Message" : err.stack};
+            meJSON = {"Error" : true, "Message" : err.stack.split('at')[0]};
             res.json(meJSON);
-            app.errorLogger.error(meJSON.Message);
+            app.errorLogger.error(err.stack);
           } else {
             meJSON = {"Error" : false, "Message" : result}
             res.json(meJSON);
